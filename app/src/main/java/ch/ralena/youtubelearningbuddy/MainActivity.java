@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -32,9 +33,10 @@ public class MainActivity extends AppCompatActivity {
 		String order = "rating";
 		String type = "video";
 		String query = "soymilk";
+		int maxResults = 20;
 
 		YoutubeService.getYoutubeService()
-				.videos(order, type, query)
+				.videos(order, type, query, maxResults)
 				.enqueue(new Callback<SearchResults>() {
 					@Override
 					public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
@@ -42,12 +44,14 @@ public class MainActivity extends AppCompatActivity {
 							Log.d(TAG, "success");
 							videos = (ArrayList<Item>) response.body().getItems();
 							videosAdapter.updateVideos(videos);
+						} else {
+							Toast.makeText(MainActivity.this, "Error getting results", Toast.LENGTH_SHORT).show();
 						}
 					}
 
 					@Override
 					public void onFailure(Call<SearchResults> call, Throwable t) {
-
+						Toast.makeText(MainActivity.this, "Error getting results", Toast.LENGTH_SHORT).show();
 					}
 				});
 

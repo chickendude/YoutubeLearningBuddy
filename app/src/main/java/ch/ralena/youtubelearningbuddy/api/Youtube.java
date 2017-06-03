@@ -20,6 +20,6 @@ public interface Youtube {
 	Call<SearchResults> videos(
 			@Query("order") String order,
 			@Query("type") String type,        // video or playlist?
-			@Query("q") String query
-	);
+			@Query("q") String query,
+			@Query("maxResults") int maxResults);
 }
