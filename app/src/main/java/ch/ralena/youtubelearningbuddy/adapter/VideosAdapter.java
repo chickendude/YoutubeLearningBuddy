@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 
 import ch.ralena.youtubelearningbuddy.R;
@@ -57,6 +59,9 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 
 		public void bindView(Item item) {
 			title.setText(item.getSnippet().getTitle());
+			Picasso.with(thumbnail.getContext())
+					.load(item.getSnippet().getThumbnails().getMedium().getUrl())
+					.into(thumbnail);
 		}
 	}
 }
