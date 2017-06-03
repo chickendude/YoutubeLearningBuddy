@@ -9,19 +9,18 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.model.Item;
+import ch.ralena.youtubelearningbuddy.model.VideoList;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
 
-/**
- * Created by crater on 02/06/17.
- */
+public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements Consumer<VideoList> {
+	List<Item> videos;
 
-public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> {
-	ArrayList<Item> videos;
-
-	public VideosAdapter(ArrayList<Item> videos) {
+	public VideosAdapter(List<Item> videos) {
 		this.videos = videos;
 	}
 
@@ -41,8 +40,9 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 		return videos.size();
 	}
 
-	public void updateVideos(ArrayList<Item> videos) {
-		this.videos = videos;
+	@Override
+	public void accept(@NonNull VideoList videoList) throws Exception {
+		this.videos = videoList.getVideos();
 		notifyDataSetChanged();
 	}
 

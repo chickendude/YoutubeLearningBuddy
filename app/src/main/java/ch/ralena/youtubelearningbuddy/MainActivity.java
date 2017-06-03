@@ -8,18 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
-import ch.ralena.youtubelearningbuddy.model.Item;
 import ch.ralena.youtubelearningbuddy.model.SearchResults;
+import ch.ralena.youtubelearningbuddy.model.VideoList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,18 +26,22 @@ public class MainActivity extends AppCompatActivity {
 	private static final String TAG = MainActivity.class.getSimpleName();
 	private RecyclerView recyclerView;
 	private VideosAdapter videosAdapter;
-	private ArrayList<Item> videos;
+	private VideoList videos;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		videos = new ArrayList<>();
+		videos = new VideoList();
+		videosAdapter = new VideosAdapter(videos.getVideos());
 
+		// subscribe our adapter to video list
+		videos.asObservable().subscribe(videosAdapter);
+
+		// set up recycler view
 		recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-		videosAdapter = new VideosAdapter(videos);
 		recyclerView.setAdapter(videosAdapter);
 
 	}
@@ -71,9 +72,7 @@ public class MainActivity extends AppCompatActivity {
 					@Override
 					public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
 						if (response.isSuccessful()) {
-							Log.d(TAG, "success");
-							videos = (ArrayList<Item>) response.body().getItems();
-							videosAdapter.updateVideos(videos);
+							videos.setVideos(response.body().getItems());
 						} else {
 							Toast.makeText(MainActivity.this, "Error getting results", Toast.LENGTH_SHORT).show();
 						}
