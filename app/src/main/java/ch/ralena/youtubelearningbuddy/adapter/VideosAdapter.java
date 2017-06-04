@@ -18,7 +18,6 @@ import ch.ralena.youtubelearningbuddy.model.Item;
 import ch.ralena.youtubelearningbuddy.model.VideoList;
 import rx.Observable;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements Action1<VideoList> {
@@ -44,12 +43,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 		final Item item = videos.get(position);
 
 		RxView.clicks(holder.container)
-				.map(new Func1<Void, Item>() {
-					@Override
-					public Item call(Void aVoid) {
-						return item;
-					}
-				}).subscribe(videoClickSubject);
+				.map(aVoid -> item)
+				.subscribe(videoClickSubject);
 
 		holder.bindView(videos.get(position));
 	}
