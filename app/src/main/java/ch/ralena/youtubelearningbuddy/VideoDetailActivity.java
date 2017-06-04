@@ -3,6 +3,8 @@ package ch.ralena.youtubelearningbuddy;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,6 +12,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import ch.ralena.youtubelearningbuddy.adapter.CommentsAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.model.CommentList;
 import ch.ralena.youtubelearningbuddy.model.comment.CommentThreads;
@@ -30,10 +33,16 @@ public class VideoDetailActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_videodetail);
 		supportPostponeEnterTransition();
 
-		comments = new CommentList(null);
+		comments = new CommentList();
 		videoId = getIntent().getStringExtra(MainActivity.VIDEO_ID);
 		loadVideo();
 		loadComments();
+
+		CommentsAdapter adapter = new CommentsAdapter();
+		comments.asObservable().subscribe(adapter);
+		RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+		recyclerView.setLayoutManager(new LinearLayoutManager(this));
+		recyclerView.setAdapter(adapter);
 	}
 
 	private void loadVideo() {
@@ -75,14 +84,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 					public void onResponse(Call<CommentThreads> call, Response<CommentThreads> response) {
 						if (response.isSuccessful()) {
 							if (!response.body().getItems().isEmpty()) {
-								comments = new CommentList(response.body().getItems());
-							}
-							if (comments.getComments().size() > 0) {
-								Toast.makeText(
-										VideoDetailActivity.this,
-										comments.getComments().get(0).getTopLevelComment().getSnippet().getTextOriginal(),
-										Toast.LENGTH_SHORT)
-										.show();
+								comments.setComments(response.body());
 							} else {
 								Toast.makeText(VideoDetailActivity.this, "No comments", Toast.LENGTH_SHORT).show();
 							}
