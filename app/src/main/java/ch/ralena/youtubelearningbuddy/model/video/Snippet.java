@@ -24,9 +24,6 @@ public class Snippet {
     @SerializedName("channelTitle")
     @Expose
     private String channelTitle;
-    @SerializedName("liveBroadcastContent")
-    @Expose
-    private String liveBroadcastContent;
 
     public String getPublishedAt() {
         return publishedAt;
@@ -74,14 +71,6 @@ public class Snippet {
 
     public void setChannelTitle(String channelTitle) {
         this.channelTitle = channelTitle;
-    }
-
-    public String getLiveBroadcastContent() {
-        return liveBroadcastContent;
-    }
-
-    public void setLiveBroadcastContent(String liveBroadcastContent) {
-        this.liveBroadcastContent = liveBroadcastContent;
     }
 
 }
