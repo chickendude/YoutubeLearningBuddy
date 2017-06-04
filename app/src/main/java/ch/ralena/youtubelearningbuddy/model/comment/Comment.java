@@ -4,7 +4,7 @@ package ch.ralena.youtubelearningbuddy.model.comment;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Snippet_ {
+public class Comment {
 
     @SerializedName("authorDisplayName")
     @Expose
@@ -12,12 +12,6 @@ public class Snippet_ {
     @SerializedName("authorProfileImageUrl")
     @Expose
     private String authorProfileImageUrl;
-    @SerializedName("authorChannelUrl")
-    @Expose
-    private String authorChannelUrl;
-    @SerializedName("authorChannelId")
-    @Expose
-    private AuthorChannelId authorChannelId;
     @SerializedName("videoId")
     @Expose
     private String videoId;
@@ -27,9 +21,6 @@ public class Snippet_ {
     @SerializedName("textOriginal")
     @Expose
     private String textOriginal;
-    @SerializedName("canRate")
-    @Expose
-    private boolean canRate;
     @SerializedName("viewerRating")
     @Expose
     private String viewerRating;
@@ -59,22 +50,6 @@ public class Snippet_ {
         this.authorProfileImageUrl = authorProfileImageUrl;
     }
 
-    public String getAuthorChannelUrl() {
-        return authorChannelUrl;
-    }
-
-    public void setAuthorChannelUrl(String authorChannelUrl) {
-        this.authorChannelUrl = authorChannelUrl;
-    }
-
-    public AuthorChannelId getAuthorChannelId() {
-        return authorChannelId;
-    }
-
-    public void setAuthorChannelId(AuthorChannelId authorChannelId) {
-        this.authorChannelId = authorChannelId;
-    }
-
     public String getVideoId() {
         return videoId;
     }
@@ -97,14 +72,6 @@ public class Snippet_ {
 
     public void setTextOriginal(String textOriginal) {
         this.textOriginal = textOriginal;
-    }
-
-    public boolean isCanRate() {
-        return canRate;
-    }
-
-    public void setCanRate(boolean canRate) {
-        this.canRate = canRate;
     }
 
     public String getViewerRating() {

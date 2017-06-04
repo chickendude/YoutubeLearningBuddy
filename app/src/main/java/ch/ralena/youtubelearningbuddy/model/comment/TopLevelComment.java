@@ -6,49 +6,27 @@ import com.google.gson.annotations.SerializedName;
 
 public class TopLevelComment {
 
-    @SerializedName("kind")
-    @Expose
-    private String kind;
-    @SerializedName("etag")
-    @Expose
-    private String etag;
-    @SerializedName("id")
-    @Expose
-    private String id;
-    @SerializedName("snippet")
-    @Expose
-    private Snippet_ snippet;
+	@SerializedName("id")
+	@Expose
+	private String id;
+	@SerializedName("snippet")
+	@Expose
+	private Comment comment;
 
-    public String getKind() {
-        return kind;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setKind(String kind) {
-        this.kind = kind;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getEtag() {
-        return etag;
-    }
+	public Comment getComment() {
+		return comment;
+	}
 
-    public void setEtag(String etag) {
-        this.etag = etag;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public Snippet_ getSnippet() {
-        return snippet;
-    }
-
-    public void setSnippet(Snippet_ snippet) {
-        this.snippet = snippet;
-    }
+	public void setComment(Comment comment) {
+		this.comment = comment;
+	}
 
 }
