@@ -15,13 +15,11 @@ import android.widget.Toast;
 
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
-import ch.ralena.youtubelearningbuddy.model.Item;
 import ch.ralena.youtubelearningbuddy.model.SearchResults;
 import ch.ralena.youtubelearningbuddy.model.VideoList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -40,12 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
 		// subscribe our adapter to video list
 		videos.asObservable().subscribe(videosAdapter);
-		videosAdapter.asObservable().subscribe(new Action1<Item>() {
-			@Override
-			public void call(Item item) {
-				Toast.makeText(MainActivity.this, item.getSnippet().getTitle(), Toast.LENGTH_SHORT).show();
-			}
-		});
+		videosAdapter.asObservable().subscribe(item -> Toast.makeText(MainActivity.this, item.getSnippet().getTitle(), Toast.LENGTH_SHORT).show());
 
 		// set up recycler view
 		recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
