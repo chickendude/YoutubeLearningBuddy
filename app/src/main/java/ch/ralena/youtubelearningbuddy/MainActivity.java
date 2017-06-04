@@ -4,23 +4,28 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
-import ch.ralena.youtubelearningbuddy.model.Item;
-import ch.ralena.youtubelearningbuddy.model.SearchResults;
 import ch.ralena.youtubelearningbuddy.model.VideoList;
+import ch.ralena.youtubelearningbuddy.model.video.Item;
+import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
+import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static ch.ralena.youtubelearningbuddy.R.menu.options;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
 	public static final String VIDEO_THUMBNAIL = "tag_video_thumbnail";
 	public static final String TITLE = "tag_title";
 	public static final String DESCRIPTION = "tag_description";
+	public static final String TRANSITION_NAME = "tag_transition_name";
+	public static final String VIDEO_ID = "tag_video_id";
 	private RecyclerView recyclerView;
 	private VideosAdapter videosAdapter;
 	private VideoList videos;
@@ -42,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
 		// subscribe our adapter to video list
 		videos.asObservable().subscribe(videosAdapter);
-		videosAdapter.asObservable().subscribe(item -> loadDetailActivity(item));
+		videosAdapter.asObservable().subscribe(itemClickEvent -> loadDetailActivity(itemClickEvent));
 
 		// set up recycler view
 		recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -52,13 +59,17 @@ public class MainActivity extends AppCompatActivity {
 
 	}
 
-	private void loadDetailActivity(Item item) {
-		Toast.makeText(MainActivity.this, item.getSnippet().getTitle(), Toast.LENGTH_SHORT).show();
+	private void loadDetailActivity(ItemClickEvent itemClickEvent) {
+		Item item = itemClickEvent.getVideo();
+		ImageView imageView = itemClickEvent.getImageView();
 		Intent intent = new Intent(this, VideoDetailActivity.class);
 		intent.putExtra(VIDEO_THUMBNAIL, item.getSnippet().getThumbnails().getHigh().getUrl());
 		intent.putExtra(TITLE, item.getSnippet().getTitle());
 		intent.putExtra(DESCRIPTION, item.getSnippet().getDescription());
-		startActivity(intent);
+		intent.putExtra(TRANSITION_NAME, imageView.getTransitionName());
+		intent.putExtra(VIDEO_ID, itemClickEvent.getVideoId());
+		ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(this, imageView, imageView.getTransitionName());
+		startActivity(intent, options.toBundle());
 
 	}
 
@@ -79,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
 
 		searchVideos(order, type, query, maxResults);
 	}
-
 
 	private void searchVideos(String order, String type, String query, int maxResults) {
 		YoutubeService.getYoutubeService()
@@ -103,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.options, menu);
+		getMenuInflater().inflate(options, menu);
 
 		// connect searchable config with SearchView
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);

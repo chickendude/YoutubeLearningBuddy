@@ -14,8 +14,9 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ch.ralena.youtubelearningbuddy.R;
-import ch.ralena.youtubelearningbuddy.model.Item;
+import ch.ralena.youtubelearningbuddy.model.video.Item;
 import ch.ralena.youtubelearningbuddy.model.VideoList;
+import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
@@ -23,13 +24,13 @@ import io.reactivex.subjects.PublishSubject;
 
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements Consumer<VideoList> {
 	private List<Item> videos;
-	private PublishSubject<Item> videoClickSubject = PublishSubject.create();
+	private PublishSubject<ItemClickEvent> videoClickSubject = PublishSubject.create();
 
 	public VideosAdapter(List<Item> videos) {
 		this.videos = videos;
 	}
 
-	public Observable<Item> asObservable() {
+	public Observable<ItemClickEvent> asObservable() {
 		return videoClickSubject;
 	}
 
@@ -41,10 +42,13 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
-		final Item item = videos.get(position);
-
+		ItemClickEvent itemClickEvent = new ItemClickEvent(
+				videos.get(position),
+				holder.thumbnail,
+				videos.get(position).getId().getVideoId());
+		holder.thumbnail.setTransitionName("item" + position);
 		RxView.clicks(holder.container)
-				.map(aVoid -> item)
+				.map(aVoid -> itemClickEvent)
 				.subscribe(videoClickSubject);
 
 		holder.bindView(videos.get(position));

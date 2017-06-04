@@ -1,5 +1,5 @@
 
-package ch.ralena.youtubelearningbuddy.model;
+package ch.ralena.youtubelearningbuddy.model.video;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

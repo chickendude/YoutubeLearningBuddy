@@ -3,6 +3,7 @@ package ch.ralena.youtubelearningbuddy.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import ch.ralena.youtubelearningbuddy.model.video.Item;
 import io.reactivex.Observable;
 import io.reactivex.subjects.ReplaySubject;
 
