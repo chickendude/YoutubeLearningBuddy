@@ -15,7 +15,10 @@ import com.squareup.picasso.Picasso;
 import ch.ralena.youtubelearningbuddy.adapter.CommentsAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.model.CommentList;
+import ch.ralena.youtubelearningbuddy.model.SingleVideo;
 import ch.ralena.youtubelearningbuddy.model.comment.CommentThreads;
+import ch.ralena.youtubelearningbuddy.model.singleVideo.Snippet;
+import ch.ralena.youtubelearningbuddy.model.singleVideo.VideoResult;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -26,6 +29,12 @@ import retrofit2.Response;
 public class VideoDetailActivity extends AppCompatActivity {
 	private String videoId;
 	CommentList comments;
+	private SingleVideo singleVideo;
+
+	private ImageView videoThumbnail;
+	private TextView titleText;
+	private TextView descriptionText;
+
 
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,11 +42,21 @@ public class VideoDetailActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_videodetail);
 		supportPostponeEnterTransition();
 
+		// load views
+		videoThumbnail = (ImageView) findViewById(R.id.videoThumbnail);
+		titleText = (TextView) findViewById(R.id.title);
+		descriptionText = (TextView) findViewById(R.id.description);
+
+		// set up detail page objects
 		comments = new CommentList();
+		singleVideo = new SingleVideo();
+
+		// get video id and load everything from Youtube
 		videoId = getIntent().getStringExtra(MainActivity.VIDEO_ID);
 		loadVideo();
 		loadComments();
 
+		// set up comments recycler view
 		CommentsAdapter adapter = new CommentsAdapter();
 		comments.asObservable().subscribe(adapter);
 		RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
@@ -46,34 +65,41 @@ public class VideoDetailActivity extends AppCompatActivity {
 	}
 
 	private void loadVideo() {
-		String url = getIntent().getStringExtra(MainActivity.VIDEO_THUMBNAIL);
-		String title = getIntent().getStringExtra(MainActivity.TITLE);
-		String description = getIntent().getStringExtra(MainActivity.DESCRIPTION);
-		String transitionName = getIntent().getStringExtra(MainActivity.TRANSITION_NAME);
+		singleVideo.asObservable()
+				.subscribe(video -> {
+					Picasso.with(videoThumbnail.getContext())
+							.load(video.getThumbnailUrl())
+							.fit()
+							.centerCrop()
+							.into(videoThumbnail, new Callback() {
+								@Override
+								public void onSuccess() {
+									supportStartPostponedEnterTransition();
+								}
 
-		ImageView videoThumbnail = (ImageView) findViewById(R.id.videoThumbnail);
-		TextView titleText = (TextView) findViewById(R.id.title);
-		TextView descriptionText = (TextView) findViewById(R.id.description);
+								@Override
+								public void onError() {
+									supportStartPostponedEnterTransition();
+								}
+							});
+					titleText.setText(video.getTitle());
+					descriptionText.setText(video.getDescription());
+				});
 
-		videoThumbnail.setTransitionName(transitionName);
-
-		Picasso.with(videoThumbnail.getContext())
-				.load(url)
-				.fit()
-				.centerCrop()
-				.into(videoThumbnail, new Callback() {
+		YoutubeService.getYoutubeService()
+				.video(videoId)
+				.enqueue(new retrofit2.Callback<VideoResult>() {
 					@Override
-					public void onSuccess() {
-						supportStartPostponedEnterTransition();
+					public void onResponse(Call<VideoResult> call, Response<VideoResult> response) {
+						Snippet snippet = response.body().getItem().get(0).getSnippet();
+						singleVideo.loadFromSnippet(snippet);
 					}
 
 					@Override
-					public void onError() {
-						supportStartPostponedEnterTransition();
+					public void onFailure(Call<VideoResult> call, Throwable t) {
+
 					}
 				});
-		titleText.setText(title);
-		descriptionText.setText(description);
 	}
 
 	private void loadComments() {

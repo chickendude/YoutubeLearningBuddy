@@ -1,6 +1,7 @@
 package ch.ralena.youtubelearningbuddy.api;
 
 import ch.ralena.youtubelearningbuddy.model.comment.CommentThreads;
+import ch.ralena.youtubelearningbuddy.model.singleVideo.VideoResult;
 import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -20,6 +21,11 @@ public interface Youtube {
 			@Query("type") String type,        // video or playlist?
 			@Query("q") String query,
 			@Query("maxResults") int maxResults);
+
+	@GET("videos?part=snippet&key=" + API_KEY)
+	Call<VideoResult> video(
+			@Query("id") String videoId);
+
 
 	@GET("commentThreads?part=snippet&key=" + API_KEY)
 	Call<CommentThreads> comments(
