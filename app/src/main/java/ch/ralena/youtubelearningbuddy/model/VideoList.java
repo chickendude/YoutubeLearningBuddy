@@ -3,8 +3,9 @@ package ch.ralena.youtubelearningbuddy.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Observable;
-import io.reactivex.subjects.ReplaySubject;
+import rx.Observable;
+import rx.subjects.ReplaySubject;
+
 
 public class VideoList {
 	ReplaySubject<VideoList> notifier = ReplaySubject.create();

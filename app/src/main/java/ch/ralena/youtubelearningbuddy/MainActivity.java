@@ -5,21 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
+import ch.ralena.youtubelearningbuddy.model.Item;
 import ch.ralena.youtubelearningbuddy.model.SearchResults;
 import ch.ralena.youtubelearningbuddy.model.VideoList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import rx.functions.Action1;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,10 +40,17 @@ public class MainActivity extends AppCompatActivity {
 
 		// subscribe our adapter to video list
 		videos.asObservable().subscribe(videosAdapter);
+		videosAdapter.asObservable().subscribe(new Action1<Item>() {
+			@Override
+			public void call(Item item) {
+				Toast.makeText(MainActivity.this, item.getSnippet().getTitle(), Toast.LENGTH_SHORT).show();
+			}
+		});
 
 		// set up recycler view
 		recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+		recyclerView.setItemAnimator(new DefaultItemAnimator());
 		recyclerView.setAdapter(videosAdapter);
 
 	}
@@ -87,8 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.options, menu);
+		getMenuInflater().inflate(R.menu.options, menu);
 
 		// connect searchable config with SearchView
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
