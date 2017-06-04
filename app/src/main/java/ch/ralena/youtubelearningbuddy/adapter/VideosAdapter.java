@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jakewharton.rxbinding.view.RxView;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -16,11 +16,12 @@ import java.util.List;
 import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.model.Item;
 import ch.ralena.youtubelearningbuddy.model.VideoList;
-import rx.Observable;
-import rx.functions.Action1;
-import rx.subjects.PublishSubject;
+import io.reactivex.Observable;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.subjects.PublishSubject;
 
-public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements Action1<VideoList> {
+public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements Consumer<VideoList> {
 	private List<Item> videos;
 	private PublishSubject<Item> videoClickSubject = PublishSubject.create();
 
@@ -56,7 +57,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 	}
 
 	@Override
-	public void call(VideoList videoList) {
+	public void accept(@NonNull VideoList videoList) throws Exception {
 		this.videos = videoList.getVideos();
 		notifyDataSetChanged();
 	}

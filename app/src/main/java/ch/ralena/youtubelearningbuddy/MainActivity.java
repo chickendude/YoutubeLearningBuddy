@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
+import ch.ralena.youtubelearningbuddy.model.Item;
 import ch.ralena.youtubelearningbuddy.model.SearchResults;
 import ch.ralena.youtubelearningbuddy.model.VideoList;
 import retrofit2.Call;
@@ -24,6 +25,9 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
+	public static final String VIDEO_THUMBNAIL = "tag_video_thumbnail";
+	public static final String TITLE = "tag_title";
+	public static final String DESCRIPTION = "tag_description";
 	private RecyclerView recyclerView;
 	private VideosAdapter videosAdapter;
 	private VideoList videos;
@@ -38,13 +42,23 @@ public class MainActivity extends AppCompatActivity {
 
 		// subscribe our adapter to video list
 		videos.asObservable().subscribe(videosAdapter);
-		videosAdapter.asObservable().subscribe(item -> Toast.makeText(MainActivity.this, item.getSnippet().getTitle(), Toast.LENGTH_SHORT).show());
+		videosAdapter.asObservable().subscribe(item -> loadDetailActivity(item));
 
 		// set up recycler view
 		recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 		recyclerView.setItemAnimator(new DefaultItemAnimator());
 		recyclerView.setAdapter(videosAdapter);
+
+	}
+
+	private void loadDetailActivity(Item item) {
+		Toast.makeText(MainActivity.this, item.getSnippet().getTitle(), Toast.LENGTH_SHORT).show();
+		Intent intent = new Intent(this, VideoDetailActivity.class);
+		intent.putExtra(VIDEO_THUMBNAIL, item.getSnippet().getThumbnails().getHigh().getUrl());
+		intent.putExtra(TITLE, item.getSnippet().getTitle());
+		intent.putExtra(DESCRIPTION, item.getSnippet().getDescription());
+		startActivity(intent);
 
 	}
 
