@@ -1,10 +1,12 @@
 package ch.ralena.youtubelearningbuddy;
 
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,11 +24,9 @@ import ch.ralena.youtubelearningbuddy.model.singleVideo.VideoResult;
 import retrofit2.Call;
 import retrofit2.Response;
 
-/**
- * Created by crater on 04/06/17.
- */
-
 public class VideoDetailActivity extends AppCompatActivity {
+
+
 	private String videoId;
 	CommentList comments;
 	private SingleVideo singleVideo;
@@ -46,6 +46,16 @@ public class VideoDetailActivity extends AppCompatActivity {
 		videoThumbnail = (ImageView) findViewById(R.id.videoThumbnail);
 		titleText = (TextView) findViewById(R.id.title);
 		descriptionText = (TextView) findViewById(R.id.description);
+		checkDescriptionOverflow();
+		descriptionText.setOnClickListener(view -> {
+			ObjectAnimator animation;
+			int numLines =
+					descriptionText.getLineCount() == descriptionText.getMaxLines() ?
+							4 : descriptionText.getLineCount();
+			checkDescriptionOverflow();
+			animation = ObjectAnimator.ofInt(descriptionText, "maxLines", numLines);
+			animation.setDuration(200).start();
+		});
 
 		// set up detail page objects
 		comments = new CommentList();
@@ -64,7 +74,16 @@ public class VideoDetailActivity extends AppCompatActivity {
 		recyclerView.setAdapter(adapter);
 	}
 
+	private void checkDescriptionOverflow() {
+		if (descriptionText.getLineCount() > descriptionText.getMaxLines()) {
+			findViewById(R.id.ellipsis).setVisibility(View.GONE);
+		} else {
+			findViewById(R.id.ellipsis).setVisibility(View.VISIBLE);
+		}
+	}
+
 	private void loadVideo() {
+		// update view when video data has loaded
 		singleVideo.asObservable()
 				.subscribe(video -> {
 					Picasso.with(videoThumbnail.getContext())

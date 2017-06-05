@@ -59,13 +59,13 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.ViewHo
 
 		public void bindView(Snippet snippet) {
 			Picasso.with(avatar.getContext())
-					.load(snippet.getTopLevelComment().getSnippet().getAuthorProfileImageUrl())
+					.load(snippet.getTopLevelComment().getComment().getAuthorProfileImageUrl())
 					.fit()
 					.centerCrop()
 					.into(avatar);
-			username.setText(snippet.getTopLevelComment().getSnippet().getAuthorDisplayName());
-			date.setText(snippet.getTopLevelComment().getSnippet().getPublishedAt());
-			comment.setText(snippet.getTopLevelComment().getSnippet().getTextOriginal());
+			username.setText(snippet.getTopLevelComment().getComment().getAuthorDisplayName());
+			date.setText(snippet.getTopLevelComment().getComment().getPublishedAt());
+			comment.setText(snippet.getTopLevelComment().getComment().getTextOriginal());
 		}
 	}
 }
