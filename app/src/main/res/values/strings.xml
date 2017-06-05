@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Youtube Learning Buddy</string>
 	<string name="search_hint">Search YouTube</string>
+	<string name="no_search_results">No search results</string>
 </resources>

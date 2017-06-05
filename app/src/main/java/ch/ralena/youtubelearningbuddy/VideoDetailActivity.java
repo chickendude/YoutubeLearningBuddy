@@ -16,6 +16,7 @@ import com.squareup.picasso.Picasso;
 
 import ch.ralena.youtubelearningbuddy.adapter.CommentsAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
+import ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment;
 import ch.ralena.youtubelearningbuddy.model.CommentList;
 import ch.ralena.youtubelearningbuddy.model.SingleVideo;
 import ch.ralena.youtubelearningbuddy.model.comment.CommentThreads;
@@ -45,6 +46,8 @@ public class VideoDetailActivity extends AppCompatActivity {
 
 		// load views
 		videoThumbnail = (ImageView) findViewById(R.id.videoThumbnail);
+		String transitionName = getIntent().getStringExtra(VideoSearchFragment.TRANSITION_NAME);
+		videoThumbnail.setTransitionName(transitionName);
 		titleText = (TextView) findViewById(R.id.title);
 		descriptionText = (TextView) findViewById(R.id.description);
 		ellipsisText = (TextView) findViewById(R.id.ellipsisText);
@@ -63,7 +66,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 		singleVideo = new SingleVideo();
 
 		// get video id and load everything from Youtube
-		videoId = getIntent().getStringExtra(MainActivity.VIDEO_ID);
+		videoId = getIntent().getStringExtra(VideoSearchFragment.VIDEO_ID);
 		loadVideo();
 		loadComments();
 

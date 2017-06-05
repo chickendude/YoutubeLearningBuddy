@@ -6,15 +6,17 @@
 	android:layout_height="match_parent"
 	tools:context="ch.ralena.youtubelearningbuddy.MainActivity">
 
-	<TextView
-		android:id="@+id/textView"
+	<android.support.v4.view.ViewPager
+		android:id="@+id/viewPager"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true" />
-
-	<android.support.v7.widget.RecyclerView
-		android:id="@+id/recyclerView"
+		android:layout_above="@+id/tabLayout"/>
+	<android.support.design.widget.TabLayout
+		android:id="@+id/tabLayout"
+		app:tabTextColor="@color/colorSecondaryText"
+		app:tabSelectedTextColor="@color/colorPrimaryDark"
+		app:tabIndicatorColor="@color/colorPrimary"
+		android:layout_alignParentBottom="true"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_below="@id/textView" />
+		android:layout_height="wrap_content"/>
 </RelativeLayout>
