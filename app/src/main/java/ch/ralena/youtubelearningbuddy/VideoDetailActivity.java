@@ -109,6 +109,9 @@ public class VideoDetailActivity extends AppCompatActivity {
 								}
 							});
 					titleText.setText(video.getTitle());
+					// must set in code or else marquee won't work
+					titleText.setSingleLine(true);
+					titleText.setSelected(true);
 					descriptionText.setText(video.getDescription());
 					if(descriptionText.getLineCount() > 4)
 						ellipsisText.setVisibility(View.VISIBLE);
