@@ -34,6 +34,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 	private ImageView videoThumbnail;
 	private TextView titleText;
 	private TextView descriptionText;
+	private TextView ellipsisText;
 
 
 	@Override
@@ -46,7 +47,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 		videoThumbnail = (ImageView) findViewById(R.id.videoThumbnail);
 		titleText = (TextView) findViewById(R.id.title);
 		descriptionText = (TextView) findViewById(R.id.description);
-		checkDescriptionOverflow();
+		ellipsisText = (TextView) findViewById(R.id.ellipsisText);
 		descriptionText.setOnClickListener(view -> {
 			ObjectAnimator animation;
 			int numLines =
@@ -74,11 +75,17 @@ public class VideoDetailActivity extends AppCompatActivity {
 		recyclerView.setAdapter(adapter);
 	}
 
+
 	private void checkDescriptionOverflow() {
-		if (descriptionText.getLineCount() > descriptionText.getMaxLines()) {
-			findViewById(R.id.ellipsis).setVisibility(View.GONE);
-		} else {
-			findViewById(R.id.ellipsis).setVisibility(View.VISIBLE);
+		// if it has more than 4 lines, check whether it's expanded or not
+		// and update ellipsis text accordingly
+		if(descriptionText.getLineCount() > 4) {
+			ellipsisText.setVisibility(View.VISIBLE);
+			if (descriptionText.getLineCount() > descriptionText.getMaxLines()) {
+				ellipsisText.setText("");
+			} else {
+				ellipsisText.setText("...");
+			}
 		}
 	}
 
@@ -103,7 +110,9 @@ public class VideoDetailActivity extends AppCompatActivity {
 							});
 					titleText.setText(video.getTitle());
 					descriptionText.setText(video.getDescription());
-				});
+					if(descriptionText.getLineCount() > 4)
+						ellipsisText.setVisibility(View.VISIBLE);
+					});
 
 		YoutubeService.getYoutubeService()
 				.video(videoId)

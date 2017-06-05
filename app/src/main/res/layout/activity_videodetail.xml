@@ -20,19 +20,27 @@
 		tools:text="Title"/>
 
 
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+		<TextView
+			android:id="@+id/description"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:maxLines="4"
+			android:padding="2dp"
+			tools:text="A description of the video."/>
+	</ScrollView>
+
 	<TextView
-		android:id="@+id/description"
+		android:id="@+id/ellipsisText"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:maxLines="4"
-		android:padding="2dp"
-		tools:text="A description of the video."/>
-	<TextView
-		android:id="@+id/ellipsis"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:visibility="gone"
-		android:text="..."/>
+		android:background="@drawable/background_ellipsis"
+		android:rotation="180"
+		android:text="..."
+		android:textAlignment="center"
+		android:visibility="gone"/>
 
 	<android.support.v7.widget.RecyclerView
 		android:id="@+id/recyclerView"
