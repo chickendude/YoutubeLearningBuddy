@@ -14,8 +14,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ch.ralena.youtubelearningbuddy.R;
-import ch.ralena.youtubelearningbuddy.model.video.Item;
 import ch.ralena.youtubelearningbuddy.model.VideoList;
+import ch.ralena.youtubelearningbuddy.model.video.Item;
 import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
@@ -23,6 +23,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements Consumer<VideoList> {
+	private static final int VIEW_EMPTY = 0;
+	private static final int VIEW_VIDEO = 1;
+
 	private List<Item> videos;
 	private PublishSubject<ItemClickEvent> videoClickSubject = PublishSubject.create();
 
@@ -36,28 +39,44 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 
 	@Override
 	public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-		View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_video, parent, false);
-		return new ViewHolder(view);
+		if (viewType == VIEW_VIDEO) {
+			View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_video, parent, false);
+			return new ViewHolder(view);
+		} else {
+			View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_video_empty, parent, false);
+			return new ViewHolderEmpty(view);
+		}
 	}
 
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
-		ItemClickEvent itemClickEvent = new ItemClickEvent(
-				videos.get(position),
-				holder.thumbnail,
-				videos.get(position).getId().getVideoId());
-		holder.thumbnail.setTransitionName("item" + position);
-		RxView.clicks(holder.container)
-				.map(aVoid -> itemClickEvent)
-				.subscribe(videoClickSubject);
+		if (!videos.isEmpty()) {
+			ItemClickEvent itemClickEvent = new ItemClickEvent(
+					videos.get(position),
+					holder.thumbnail,
+					videos.get(position).getId().getVideoId());
+			holder.thumbnail.setTransitionName("item" + position);
+			RxView.clicks(holder.container)
+					.map(aVoid -> itemClickEvent)
+					.subscribe(videoClickSubject);
 
-		holder.bindView(videos.get(position));
+			holder.bindView(videos.get(position));
+		}
 	}
 
 
 	@Override
 	public int getItemCount() {
-		return videos.size();
+		return videos.size() > 0 ? videos.size() : 1;
+	}
+
+	@Override
+	public int getItemViewType(int position) {
+		if (videos.isEmpty()) {
+			return VIEW_EMPTY;
+		} else {
+			return VIEW_VIDEO;
+		}
 	}
 
 	@Override
@@ -86,6 +105,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 					.fit()
 					.centerCrop()
 					.into(thumbnail);
+		}
+	}
+
+	private class ViewHolderEmpty extends ViewHolder {
+		public ViewHolderEmpty(View view) {
+			super(view);
 		}
 	}
 }
