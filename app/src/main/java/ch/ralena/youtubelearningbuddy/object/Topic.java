@@ -1,0 +1,28 @@
+package ch.ralena.youtubelearningbuddy.object;
+
+import ch.ralena.youtubelearningbuddy.model.VideoList;
+
+public class Topic {
+	private String name;
+	private VideoList videoList;
+
+	public Topic(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public VideoList getVideoList() {
+		return videoList;
+	}
+
+	public void setVideoList(VideoList videoList) {
+		this.videoList = videoList;
+	}
+}
