@@ -10,10 +10,6 @@ import ch.ralena.youtubelearningbuddy.adapter.TopicVideosAdapter;
 import ch.ralena.youtubelearningbuddy.fragment.TopicsFragment;
 import ch.ralena.youtubelearningbuddy.object.Topic;
 
-/**
- * Created by crater on 06/06/17.
- */
-
 public class TopicDetailActivity extends AppCompatActivity {
 	Topic topic;
 
