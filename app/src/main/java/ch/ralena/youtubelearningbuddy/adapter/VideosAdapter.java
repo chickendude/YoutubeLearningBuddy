@@ -1,12 +1,16 @@
 package ch.ralena.youtubelearningbuddy.adapter;
 
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.squareup.picasso.Picasso;
@@ -17,20 +21,29 @@ import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.model.VideoSearch;
 import ch.ralena.youtubelearningbuddy.model.video.Item;
 import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
+import ch.ralena.youtubelearningbuddy.object.Topic;
+import ch.ralena.youtubelearningbuddy.object.TopicList;
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
 public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements Consumer<VideoSearch> {
+	private static final String TAG = VideosAdapter.class.getSimpleName();
+
 	private static final int VIEW_EMPTY = 0;
 	private static final int VIEW_VIDEO = 1;
+	private static final int MENU_TOPIC = 0;
+	private static final int TOPIC_SUBMENU = 0;
+	private static final int ITEM_TOPIC = 1;
 
 	private List<Item> videos;
+	private TopicList topicList;
 	private PublishSubject<ItemClickEvent> videoClickSubject = PublishSubject.create();
 
-	public VideosAdapter(List<Item> videos) {
+	public VideosAdapter(List<Item> videos, TopicList topicList) {
 		this.videos = videos;
+		this.topicList = topicList;
 	}
 
 	public Observable<ItemClickEvent> asObservable() {
@@ -86,19 +99,37 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder {
-		LinearLayout container;
+		RelativeLayout container;
 		TextView title;
 		ImageView thumbnail;
+		TextView optionsBtn;
 
 		public ViewHolder(View itemView) {
 			super(itemView);
-			container = (LinearLayout) itemView.findViewById(R.id.container);
+			container = (RelativeLayout) itemView.findViewById(R.id.container);
 			title = (TextView) itemView.findViewById(R.id.titleText);
 			thumbnail = (ImageView) itemView.findViewById(R.id.thumbnailImage);
+			optionsBtn = (TextView) itemView.findViewById(R.id.optionsButton);
 		}
 
 
 		public void bindView(Item item) {
+			optionsBtn.setOnClickListener(view -> {
+				PopupMenu popup = new PopupMenu(view.getContext(), view);
+				SubMenu topicsMenu = popup.getMenu().addSubMenu(TOPIC_SUBMENU, MENU_TOPIC, Menu.NONE, "Add to topic");
+				int itemId = 0;
+				for (Topic topic : topicList.getTopics()) {
+					topicsMenu.add(ITEM_TOPIC, itemId++, Menu.NONE, topic.getName());
+				}
+				popup.setOnMenuItemClickListener(clickedItem -> {
+					if (clickedItem.getGroupId() == ITEM_TOPIC) {
+						Toast.makeText(view.getContext(), clickedItem.getTitle() + " " + clickedItem.getItemId(), Toast.LENGTH_SHORT).show();
+					}
+					return true;
+				});
+				popup.show();
+			});
+
 			title.setText(item.getSnippet().getTitle());
 			Picasso.with(thumbnail.getContext())
 					.load(item.getSnippet().getThumbnails().getMedium().getUrl())

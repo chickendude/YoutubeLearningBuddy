@@ -18,6 +18,7 @@ import ch.ralena.youtubelearningbuddy.adapter.CommentsAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment;
 import ch.ralena.youtubelearningbuddy.model.CommentList;
+import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.Video;
 import ch.ralena.youtubelearningbuddy.model.comment.CommentThreads;
 import ch.ralena.youtubelearningbuddy.model.singleVideo.Snippet;
@@ -29,20 +30,22 @@ public class VideoDetailActivity extends AppCompatActivity {
 	private static final int MAX_LINES = 2;
 
 	private String videoId;
-	CommentList comments;
+	private CommentList comments;
 	private Video video;
+	private TopicList topicList;
 
 	private ImageView videoThumbnail;
 	private TextView titleText;
 	private TextView descriptionText;
 	private TextView ellipsisText;
 
-
 	@Override
 	protected void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_videodetail);
 		supportPostponeEnterTransition();
+
+		topicList = getIntent().getParcelableExtra(VideoSearchFragment.TOPIC_LIST);
 
 		// load views
 		videoThumbnail = (ImageView) findViewById(R.id.videoThumbnail);

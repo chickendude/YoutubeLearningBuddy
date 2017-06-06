@@ -22,6 +22,7 @@ import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.model.VideoSearch;
 import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
 import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
+import ch.ralena.youtubelearningbuddy.object.TopicList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -33,13 +34,15 @@ import retrofit2.Response;
 public class VideoSearchFragment extends Fragment {
 	public static final String TRANSITION_NAME = "tag_transition_name";
 	public static final String VIDEO_ID = "tag_video_id";
+	public static final String TOPIC_LIST = "tag_topic_list";
+
 	// views
 	private RecyclerView recyclerView;
 	private VideosAdapter videosAdapter;
 	private TextView searchText;
 	// member variables
 	private VideoSearch videos;
-
+	private TopicList topicList;
 
 	@Nullable
 	@Override
@@ -47,10 +50,10 @@ public class VideoSearchFragment extends Fragment {
 		View view = inflater.inflate(R.layout.fragment_videosearch, container, false);
 
 		videos = new VideoSearch();
-
+		topicList = getArguments().getParcelable(TOPIC_LIST);
 		searchText = (TextView) view.findViewById(R.id.searchText);
 		searchText.setText(R.string.no_search_results);
-		videosAdapter = new VideosAdapter(videos.getVideos());
+		videosAdapter = new VideosAdapter(videos.getVideos(), topicList);
 
 		// subscribe our adapter to video list
 		videos.asObservable().subscribe(videosAdapter);
@@ -65,9 +68,12 @@ public class VideoSearchFragment extends Fragment {
 		return view;
 	}
 
-	public static VideoSearchFragment newInstance() {
+	public static VideoSearchFragment newInstance(TopicList topicList) {
 		VideoSearchFragment fragment = new VideoSearchFragment();
 		// add bundle/arguments to fragment
+		Bundle bundle = new Bundle();
+		bundle.putParcelable(TOPIC_LIST, topicList);
+		fragment.setArguments(bundle);
 		return fragment;
 	}
 
@@ -76,6 +82,7 @@ public class VideoSearchFragment extends Fragment {
 		Intent intent = new Intent(getActivity(), VideoDetailActivity.class);
 		intent.putExtra(VIDEO_ID, itemClickEvent.getVideoId());
 		intent.putExtra(TRANSITION_NAME, imageView.getTransitionName());
+		intent.putExtra(TOPIC_LIST, topicList);
 		ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), imageView, imageView.getTransitionName());
 		startActivity(intent, options.toBundle());
 	}

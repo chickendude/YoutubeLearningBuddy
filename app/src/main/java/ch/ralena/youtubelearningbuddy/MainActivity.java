@@ -14,6 +14,7 @@ import android.view.Menu;
 
 import ch.ralena.youtubelearningbuddy.fragment.TopicsFragment;
 import ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment;
+import ch.ralena.youtubelearningbuddy.object.TopicList;
 
 import static ch.ralena.youtubelearningbuddy.R.menu.options;
 
@@ -21,12 +22,15 @@ public class MainActivity extends AppCompatActivity {
 
 	private static final String TAG = MainActivity.class.getSimpleName();
 	private ViewPager viewPager;
-	VideoSearchFragment videoSearchFragment;
+	private VideoSearchFragment videoSearchFragment;
+	private TopicList topicList;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+		topicList = new TopicList();
 
 		viewPager = (ViewPager) findViewById(R.id.viewPager);
 		viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
@@ -44,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
 			public Fragment getItem(int position) {
 				switch (position) {
 					case 0:
-						videoSearchFragment = VideoSearchFragment.newInstance();
+						videoSearchFragment = VideoSearchFragment.newInstance(topicList);
 						return videoSearchFragment;
 					default:
-						return TopicsFragment.newInstance();
+						return TopicsFragment.newInstance(topicList);
 				}
 			}
 
