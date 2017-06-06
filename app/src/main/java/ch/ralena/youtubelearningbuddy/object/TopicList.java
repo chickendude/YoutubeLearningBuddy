@@ -14,7 +14,7 @@ import io.reactivex.subjects.PublishSubject;
  */
 
 public class TopicList implements Parcelable {
-	PublishSubject<TopicList> notifer = PublishSubject.create();
+	PublishSubject<TopicList> notifier = PublishSubject.create();
 	private List<Topic> topics;
 
 	protected TopicList(Parcel in) {
@@ -34,7 +34,7 @@ public class TopicList implements Parcelable {
 	};
 
 	public Observable<TopicList> asObservable() {
-		return notifer;
+		return notifier;
 	}
 
 	public TopicList() {
@@ -51,7 +51,12 @@ public class TopicList implements Parcelable {
 
 	public void add(Topic topic) {
 		topics.add(topic);
-		notifer.onNext(this);
+		notifier.onNext(this);
+	}
+
+	public void addVideoToTopic(int topicId, Video video) {
+		topics.get(topicId).getVideoList().addVideo(video);
+		notifier.onNext(this);
 	}
 
 	@Override

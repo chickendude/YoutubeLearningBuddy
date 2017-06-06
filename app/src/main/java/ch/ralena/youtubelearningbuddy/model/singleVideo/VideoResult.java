@@ -10,7 +10,7 @@ public class VideoResult {
 	@Expose
 	private List<Item> items;
 
-	public List<Item> getItem() {
+	public List<Item> getItems() {
 		return items;
 	}
 }

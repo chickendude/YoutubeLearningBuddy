@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,16 +19,17 @@ import ch.ralena.youtubelearningbuddy.adapter.CommentsAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment;
 import ch.ralena.youtubelearningbuddy.model.CommentList;
+import ch.ralena.youtubelearningbuddy.model.comment.CommentThreads;
+import ch.ralena.youtubelearningbuddy.model.singleVideo.Item;
+import ch.ralena.youtubelearningbuddy.model.singleVideo.VideoResult;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.Video;
-import ch.ralena.youtubelearningbuddy.model.comment.CommentThreads;
-import ch.ralena.youtubelearningbuddy.model.singleVideo.Snippet;
-import ch.ralena.youtubelearningbuddy.model.singleVideo.VideoResult;
 import retrofit2.Call;
 import retrofit2.Response;
 
 public class VideoDetailActivity extends AppCompatActivity {
 	private static final int MAX_LINES = 2;
+	private static final String TAG = VideoDetailActivity.class.getSimpleName();
 
 	private String videoId;
 	private CommentList comments;
@@ -125,18 +127,20 @@ public class VideoDetailActivity extends AppCompatActivity {
 						ellipsisText.setVisibility(View.VISIBLE);
 					});
 
+		Log.d(TAG, videoId);
 		YoutubeService.getYoutubeService()
 				.video(videoId)
 				.enqueue(new retrofit2.Callback<VideoResult>() {
 					@Override
 					public void onResponse(Call<VideoResult> call, Response<VideoResult> response) {
-						Snippet snippet = response.body().getItem().get(0).getSnippet();
-						video.loadFromSnippet(snippet);
+						Log.d(TAG,"on response");
+						Item item = response.body().getItems().get(0);
+						video.loadFromSnippet(item.getSnippet(), item.getId());
 					}
 
 					@Override
 					public void onFailure(Call<VideoResult> call, Throwable t) {
-
+						Log.d(TAG,"on failure");
 					}
 				});
 	}

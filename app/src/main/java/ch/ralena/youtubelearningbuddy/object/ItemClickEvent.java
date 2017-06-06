@@ -2,24 +2,22 @@ package ch.ralena.youtubelearningbuddy.object;
 
 import android.widget.ImageView;
 
-import ch.ralena.youtubelearningbuddy.model.video.Item;
-
 /**
  * Created by crater on 04/06/17.
  */
 
 public class ItemClickEvent {
-	private Item video;
+	private Video video;
 	private ImageView imageView;
 	private String videoId;
 
-	public ItemClickEvent(Item video, ImageView imageView, String videoId) {
+	public ItemClickEvent(Video video, ImageView imageView, String videoId) {
 		this.video = video;
 		this.imageView = imageView;
 		this.videoId = videoId;
 	}
 
-	public Item getVideo() {
+	public Video getVideo() {
 		return video;
 	}
 

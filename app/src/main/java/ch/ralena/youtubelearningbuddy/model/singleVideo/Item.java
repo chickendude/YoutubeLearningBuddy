@@ -8,9 +8,17 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class Item {
+	@SerializedName("id")
+	@Expose
+	private String id;
+
 	@SerializedName("snippet")
 	@Expose
 	private Snippet snippet;
+
+	public String getId() {
+		return id;
+	}
 
 	public Snippet getSnippet() {
 		return snippet;

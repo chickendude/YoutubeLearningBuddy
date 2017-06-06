@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,10 +20,10 @@ import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.VideoDetailActivity;
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
-import ch.ralena.youtubelearningbuddy.model.VideoSearch;
 import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
 import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
+import ch.ralena.youtubelearningbuddy.object.VideoList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,6 +33,7 @@ import retrofit2.Response;
  */
 
 public class VideoSearchFragment extends Fragment {
+	private static final String TAG = VideoSearchFragment.class.getSimpleName();
 	public static final String TRANSITION_NAME = "tag_transition_name";
 	public static final String VIDEO_ID = "tag_video_id";
 	public static final String TOPIC_LIST = "tag_topic_list";
@@ -41,7 +43,7 @@ public class VideoSearchFragment extends Fragment {
 	private VideosAdapter videosAdapter;
 	private TextView searchText;
 	// member variables
-	private VideoSearch videos;
+	private VideoList videos;
 	private TopicList topicList;
 
 	@Nullable
@@ -49,11 +51,11 @@ public class VideoSearchFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_videosearch, container, false);
 
-		videos = new VideoSearch();
+		videos = new VideoList();
 		topicList = getArguments().getParcelable(TOPIC_LIST);
 		searchText = (TextView) view.findViewById(R.id.searchText);
 		searchText.setText(R.string.no_search_results);
-		videosAdapter = new VideosAdapter(videos.getVideos(), topicList);
+		videosAdapter = new VideosAdapter(videos, topicList);
 
 		// subscribe our adapter to video list
 		videos.asObservable().subscribe(videosAdapter);
@@ -80,6 +82,7 @@ public class VideoSearchFragment extends Fragment {
 	private void loadDetailActivity(ItemClickEvent itemClickEvent) {
 		ImageView imageView = itemClickEvent.getImageView();
 		Intent intent = new Intent(getActivity(), VideoDetailActivity.class);
+		Log.d(TAG, itemClickEvent.getVideoId());
 		intent.putExtra(VIDEO_ID, itemClickEvent.getVideoId());
 		intent.putExtra(TRANSITION_NAME, imageView.getTransitionName());
 		intent.putExtra(TOPIC_LIST, topicList);
@@ -103,7 +106,7 @@ public class VideoSearchFragment extends Fragment {
 					@Override
 					public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
 						if (response.isSuccessful()) {
-							videos.setVideos(response.body().getItems());
+							videos.setVideosFromItems(response.body().getItems());
 						} else {
 							Toast.makeText(getActivity(), "Error getting results", Toast.LENGTH_SHORT).show();
 						}
