@@ -18,7 +18,7 @@ import ch.ralena.youtubelearningbuddy.adapter.CommentsAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment;
 import ch.ralena.youtubelearningbuddy.model.CommentList;
-import ch.ralena.youtubelearningbuddy.model.SingleVideo;
+import ch.ralena.youtubelearningbuddy.object.Video;
 import ch.ralena.youtubelearningbuddy.model.comment.CommentThreads;
 import ch.ralena.youtubelearningbuddy.model.singleVideo.Snippet;
 import ch.ralena.youtubelearningbuddy.model.singleVideo.VideoResult;
@@ -30,7 +30,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 
 	private String videoId;
 	CommentList comments;
-	private SingleVideo singleVideo;
+	private Video video;
 
 	private ImageView videoThumbnail;
 	private TextView titleText;
@@ -63,7 +63,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 
 		// set up detail page objects
 		comments = new CommentList();
-		singleVideo = new SingleVideo();
+		video = new Video();
 
 		// get video id and load everything from Youtube
 		videoId = getIntent().getStringExtra(VideoSearchFragment.VIDEO_ID);
@@ -94,7 +94,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 
 	private void loadVideo() {
 		// update view when video data has loaded
-		singleVideo.asObservable()
+		video.asObservable()
 				.subscribe(video -> {
 					Picasso.with(videoThumbnail.getContext())
 							.load(video.getThumbnailUrl())
@@ -128,7 +128,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 					@Override
 					public void onResponse(Call<VideoResult> call, Response<VideoResult> response) {
 						Snippet snippet = response.body().getItem().get(0).getSnippet();
-						singleVideo.loadFromSnippet(snippet);
+						video.loadFromSnippet(snippet);
 					}
 
 					@Override

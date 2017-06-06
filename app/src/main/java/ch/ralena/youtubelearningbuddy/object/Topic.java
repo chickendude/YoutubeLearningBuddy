@@ -1,7 +1,5 @@
 package ch.ralena.youtubelearningbuddy.object;
 
-import ch.ralena.youtubelearningbuddy.model.VideoList;
-
 public class Topic {
 	private String name;
 	private VideoList videoList;

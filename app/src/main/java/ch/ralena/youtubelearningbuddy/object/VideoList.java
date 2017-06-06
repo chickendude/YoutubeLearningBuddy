@@ -1,17 +1,15 @@
-package ch.ralena.youtubelearningbuddy.model;
+package ch.ralena.youtubelearningbuddy.object;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ch.ralena.youtubelearningbuddy.model.video.Item;
 import io.reactivex.Observable;
 import io.reactivex.subjects.ReplaySubject;
-
 
 public class VideoList {
 	ReplaySubject<VideoList> notifier = ReplaySubject.create();
 
-	List<Item> videos;
+	List<Video> videos;
 
 	public VideoList() {
 		this.videos = new ArrayList<>();
@@ -21,17 +19,18 @@ public class VideoList {
 		return notifier;
 	}
 
-	public List<Item> getVideos() {
+	public List<Video> getVideos() {
 		return videos;
 	}
 
-	public void setVideos(List<Item> videos) {
+	public void setVideos(List<Video> videos) {
 		this.videos = videos;
 		notifier.onNext(this);
 	}
 
-	public void addVideos(List<Item> videos) {
+	public void addVideos(List<Video> videos) {
 		this.videos.addAll(videos);
 		notifier.onNext(this);
 	}
+
 }

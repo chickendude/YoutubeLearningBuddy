@@ -12,10 +12,10 @@ import android.view.ViewGroup;
 
 import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.adapter.TopicsAdapter;
-import ch.ralena.youtubelearningbuddy.object.Topic;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
 
 public class TopicsFragment extends Fragment {
+	public static final String TOPIC_LIST = "tag_topic_list";
 	private FloatingActionButton fab;
 	private TopicList topicList;
 
@@ -27,7 +27,15 @@ public class TopicsFragment extends Fragment {
 		topicList = new TopicList();
 
 		fab = (FloatingActionButton) view.findViewById(R.id.fab);
-		fab.setOnClickListener(v -> topicList.add(new Topic("Topic " + (topicList.getTopics().size() + 1))));
+		fab.setOnClickListener(v -> {
+			// create bundle
+			Bundle bundle = new Bundle();
+			bundle.putParcelable(TOPIC_LIST, topicList);
+			// create dialog fragment
+			NewTopicDialogFragment dialogFragment = new NewTopicDialogFragment();
+			dialogFragment.setArguments(bundle);
+			dialogFragment.show(getFragmentManager(), null);
+		});
 
 		// set up recycler view
 		TopicsAdapter adapter = new TopicsAdapter();

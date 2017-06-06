@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ch.ralena.youtubelearningbuddy.R;
-import ch.ralena.youtubelearningbuddy.model.VideoList;
+import ch.ralena.youtubelearningbuddy.model.VideoSearch;
 import ch.ralena.youtubelearningbuddy.model.video.Item;
 import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
 import io.reactivex.Observable;
@@ -22,7 +22,7 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
 
-public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements Consumer<VideoList> {
+public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder> implements Consumer<VideoSearch> {
 	private static final int VIEW_EMPTY = 0;
 	private static final int VIEW_VIDEO = 1;
 
@@ -80,8 +80,8 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 	}
 
 	@Override
-	public void accept(@NonNull VideoList videoList) throws Exception {
-		this.videos = videoList.getVideos();
+	public void accept(@NonNull VideoSearch videoSearch) throws Exception {
+		this.videos = videoSearch.getVideos();
 		notifyDataSetChanged();
 	}
 

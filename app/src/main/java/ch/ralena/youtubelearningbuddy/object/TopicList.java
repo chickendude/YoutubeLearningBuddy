@@ -1,5 +1,8 @@
 package ch.ralena.youtubelearningbuddy.object;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,9 +13,25 @@ import io.reactivex.subjects.PublishSubject;
  * Created by crater on 06/06/17.
  */
 
-public class TopicList {
+public class TopicList implements Parcelable {
 	PublishSubject<TopicList> notifer = PublishSubject.create();
 	private List<Topic> topics;
+
+	protected TopicList(Parcel in) {
+		in.readList(topics, null);
+	}
+
+	public static final Creator<TopicList> CREATOR = new Creator<TopicList>() {
+		@Override
+		public TopicList createFromParcel(Parcel in) {
+			return new TopicList(in);
+		}
+
+		@Override
+		public TopicList[] newArray(int size) {
+			return new TopicList[size];
+		}
+	};
 
 	public Observable<TopicList> asObservable() {
 		return notifer;
@@ -33,5 +52,15 @@ public class TopicList {
 	public void add(Topic topic) {
 		topics.add(topic);
 		notifer.onNext(this);
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeList(topics);
 	}
 }

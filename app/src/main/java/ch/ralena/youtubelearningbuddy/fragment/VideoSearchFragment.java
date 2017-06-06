@@ -19,7 +19,7 @@ import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.VideoDetailActivity;
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
-import ch.ralena.youtubelearningbuddy.model.VideoList;
+import ch.ralena.youtubelearningbuddy.model.VideoSearch;
 import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
 import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
 import retrofit2.Call;
@@ -38,7 +38,7 @@ public class VideoSearchFragment extends Fragment {
 	private VideosAdapter videosAdapter;
 	private TextView searchText;
 	// member variables
-	private VideoList videos;
+	private VideoSearch videos;
 
 
 	@Nullable
@@ -46,7 +46,7 @@ public class VideoSearchFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_videosearch, container, false);
 
-		videos = new VideoList();
+		videos = new VideoSearch();
 
 		searchText = (TextView) view.findViewById(R.id.searchText);
 		searchText.setText(R.string.no_search_results);
