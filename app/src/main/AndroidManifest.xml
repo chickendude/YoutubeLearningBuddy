@@ -25,6 +25,7 @@
 				android:resource="@xml/searchable" />
 		</activity>
 		<activity android:name=".VideoDetailActivity"/>
+		<activity android:name=".TopicDetailActivity"/>
 
 	</application>
 

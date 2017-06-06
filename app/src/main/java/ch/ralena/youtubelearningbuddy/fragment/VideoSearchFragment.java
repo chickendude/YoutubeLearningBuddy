@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,7 +20,7 @@ import ch.ralena.youtubelearningbuddy.VideoDetailActivity;
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
-import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
+import ch.ralena.youtubelearningbuddy.object.VideoClickEvent;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.VideoList;
 import retrofit2.Call;
@@ -59,12 +58,11 @@ public class VideoSearchFragment extends Fragment {
 
 		// subscribe our adapter to video list
 		videos.asObservable().subscribe(videosAdapter);
-		videosAdapter.asObservable().subscribe(itemClickEvent -> loadDetailActivity(itemClickEvent));
+		videosAdapter.asObservable().subscribe(videoClickEvent -> loadDetailActivity(videoClickEvent));
 
 		// set up recycler view
 		recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-		recyclerView.setItemAnimator(new DefaultItemAnimator());
 		recyclerView.setAdapter(videosAdapter);
 
 		return view;
@@ -79,11 +77,11 @@ public class VideoSearchFragment extends Fragment {
 		return fragment;
 	}
 
-	private void loadDetailActivity(ItemClickEvent itemClickEvent) {
-		ImageView imageView = itemClickEvent.getImageView();
+	private void loadDetailActivity(VideoClickEvent videoClickEvent) {
+		ImageView imageView = videoClickEvent.getImageView();
 		Intent intent = new Intent(getActivity(), VideoDetailActivity.class);
-		Log.d(TAG, itemClickEvent.getVideoId());
-		intent.putExtra(VIDEO_ID, itemClickEvent.getVideoId());
+		Log.d(TAG, videoClickEvent.getVideoId());
+		intent.putExtra(VIDEO_ID, videoClickEvent.getVideoId());
 		intent.putExtra(TRANSITION_NAME, imageView.getTransitionName());
 		intent.putExtra(TOPIC_LIST, topicList);
 		ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), imageView, imageView.getTransitionName());

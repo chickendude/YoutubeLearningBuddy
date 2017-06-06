@@ -6,12 +6,12 @@ import android.widget.ImageView;
  * Created by crater on 04/06/17.
  */
 
-public class ItemClickEvent {
+public class VideoClickEvent {
 	private Video video;
 	private ImageView imageView;
 	private String videoId;
 
-	public ItemClickEvent(Video video, ImageView imageView, String videoId) {
+	public VideoClickEvent(Video video, ImageView imageView, String videoId) {
 		this.video = video;
 		this.imageView = imageView;
 		this.videoId = videoId;

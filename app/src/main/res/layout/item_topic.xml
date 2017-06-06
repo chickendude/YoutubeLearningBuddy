@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 				xmlns:tools="http://schemas.android.com/tools"
+				android:id="@+id/container"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_margin="8dp"
-				android:padding="8dp"
-				android:elevation="5dp"
 				android:background="@android:color/white"
+				android:elevation="5dp"
 				android:foreground="?android:attr/selectableItemBackground"
-				android:orientation="vertical">
+				android:orientation="vertical"
+				android:padding="8dp">
 
 	<TextView
 		android:id="@+id/topicNameText"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:textSize="20sp"
-		android:textAlignment="center"
-		android:textStyle="bold"
 		android:layout_alignParentLeft="true"
 		android:layout_alignParentTop="true"
+		android:textAlignment="center"
+		android:textSize="20sp"
+		android:textStyle="bold"
 		tools:text="Topic Title"/>
 
 	<TextView
