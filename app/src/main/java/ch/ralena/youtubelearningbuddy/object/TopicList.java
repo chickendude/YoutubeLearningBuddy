@@ -45,7 +45,11 @@ public class TopicList implements Parcelable {
 		this.topics = topics;
 	}
 
-	public List<Topic> getTopics() {
+	public Topic get(int index) {
+		return topics.get(index);
+	}
+
+	public List<Topic> all() {
 		return topics;
 	}
 

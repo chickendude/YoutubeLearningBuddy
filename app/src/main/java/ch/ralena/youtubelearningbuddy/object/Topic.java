@@ -6,6 +6,7 @@ public class Topic {
 
 	public Topic(String name) {
 		this.name = name;
+		videoList = new VideoList();
 	}
 
 	public String getName() {

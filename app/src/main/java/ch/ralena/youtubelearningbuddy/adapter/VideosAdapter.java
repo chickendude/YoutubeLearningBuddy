@@ -10,14 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.squareup.picasso.Picasso;
 
 import ch.ralena.youtubelearningbuddy.R;
-import ch.ralena.youtubelearningbuddy.model.VideoSearch;
-import ch.ralena.youtubelearningbuddy.model.video.Item;
 import ch.ralena.youtubelearningbuddy.object.ItemClickEvent;
 import ch.ralena.youtubelearningbuddy.object.Topic;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
@@ -119,13 +116,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 				PopupMenu popup = new PopupMenu(view.getContext(), view);
 				SubMenu topicsMenu = popup.getMenu().addSubMenu(TOPIC_SUBMENU, MENU_TOPIC, Menu.NONE, "Add to topic");
 				int itemId = 0;
-				for (Topic topic : topicList.getTopics()) {
+				for (Topic topic : topicList.all()) {
 					topicsMenu.add(ITEM_TOPIC, itemId++, Menu.NONE, topic.getName());
 				}
 				popup.setOnMenuItemClickListener(clickedItem -> {
 					if (clickedItem.getGroupId() == ITEM_TOPIC) {
-//						topicList.addVideoToTopic(clickedItem.getItemId(), null);
-						Toast.makeText(view.getContext(), clickedItem.getTitle() + " " + clickedItem.getItemId(), Toast.LENGTH_SHORT).show();
+						topicList.addVideoToTopic(clickedItem.getItemId(), video);
 					}
 					return true;
 				});

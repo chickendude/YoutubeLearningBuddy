@@ -24,12 +24,12 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
 
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
-		holder.bindView(topicList.getTopics().get(position));
+		holder.bindView(topicList.get(position));
 	}
 
 	@Override
 	public int getItemCount() {
-		return topicList == null ? 0 : topicList.getTopics().size();
+		return topicList == null ? 0 : topicList.all().size();
 	}
 
 	@Override
@@ -40,13 +40,17 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
 
 	public class ViewHolder extends RecyclerView.ViewHolder {
 		private TextView topicName;
+		private TextView numVideos;
+
 		public ViewHolder(View itemView) {
 			super(itemView);
 			topicName = (TextView) itemView.findViewById(R.id.topicNameText);
+			numVideos = (TextView) itemView.findViewById(R.id.videoCountText);
 		}
 
 		public void bindView(Topic topic) {
 			topicName.setText(topic.getName());
+			numVideos.setText("" + topic.getVideoList().getVideos().size());
 		}
 	}
 }
