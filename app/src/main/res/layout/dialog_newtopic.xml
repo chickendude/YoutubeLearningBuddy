@@ -7,6 +7,10 @@
 
 	<EditText
 		android:id="@+id/newTopicEdit"
+		android:imeActionLabel="Create"
+		android:imeOptions="actionSend"
+		android:imeActionId="100"
+		android:inputType="text"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:hint="Topic name"/>

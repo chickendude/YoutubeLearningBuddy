@@ -1,6 +1,5 @@
 package ch.ralena.youtubelearningbuddy.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -10,13 +9,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 
 import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.adapter.TopicsAdapter;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
+import ch.ralena.youtubelearningbuddy.tools.Keyboard;
 
 public class TopicsFragment extends Fragment {
+	private static final String TAG = TopicsFragment.class.getSimpleName();
 	public static final String TOPIC_LIST = "tag_topic_list";
 	private FloatingActionButton fab;
 	private TopicList topicList;
@@ -28,15 +28,10 @@ public class TopicsFragment extends Fragment {
 
 		topicList = getArguments().getParcelable(TOPIC_LIST);
 
+
 		fab = (FloatingActionButton) view.findViewById(R.id.fab);
 		fab.setOnClickListener(v -> {
-
-			InputMethodManager inputMethodManager =
-					(InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-			inputMethodManager.toggleSoftInputFromWindow(
-					view.getApplicationWindowToken(),
-					InputMethodManager.SHOW_FORCED, 0);
-
+			Keyboard.open(v);
 			// create bundle
 			Bundle bundle = new Bundle();
 			bundle.putParcelable(TOPIC_LIST, topicList);
