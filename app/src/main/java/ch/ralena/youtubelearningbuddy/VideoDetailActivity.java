@@ -26,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 public class VideoDetailActivity extends AppCompatActivity {
-
+	private static final int MAX_LINES = 2;
 
 	private String videoId;
 	CommentList comments;
@@ -55,7 +55,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 			ObjectAnimator animation;
 			int numLines =
 					descriptionText.getLineCount() == descriptionText.getMaxLines() ?
-							4 : descriptionText.getLineCount();
+							MAX_LINES : descriptionText.getLineCount();
 			checkDescriptionOverflow();
 			animation = ObjectAnimator.ofInt(descriptionText, "maxLines", numLines);
 			animation.setDuration(200).start();
@@ -82,7 +82,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 	private void checkDescriptionOverflow() {
 		// if it has more than 4 lines, check whether it's expanded or not
 		// and update ellipsis text accordingly
-		if(descriptionText.getLineCount() > 4) {
+		if(descriptionText.getLineCount() > MAX_LINES) {
 			ellipsisText.setVisibility(View.VISIBLE);
 			if (descriptionText.getLineCount() > descriptionText.getMaxLines()) {
 				ellipsisText.setText("");
@@ -116,7 +116,9 @@ public class VideoDetailActivity extends AppCompatActivity {
 					titleText.setSingleLine(true);
 					titleText.setSelected(true);
 					descriptionText.setText(video.getDescription());
-					if(descriptionText.getLineCount() > 4)
+					// check if description is too long
+					if(descriptionText.getLineCount() > MAX_LINES)
+						descriptionText.setMaxLines(MAX_LINES);
 						ellipsisText.setVisibility(View.VISIBLE);
 					});
 

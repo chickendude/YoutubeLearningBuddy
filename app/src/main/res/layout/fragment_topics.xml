@@ -3,16 +3,25 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
 	android:orientation="vertical">
-	<TextView
-		android:id="@+id/searchText"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentTop="true" />
 
 	<android.support.v7.widget.RecyclerView
 		android:id="@+id/recyclerView"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_below="@id/searchText" />
+		android:layout_alignParentTop="true"/>
+
+	<android.support.design.widget.FloatingActionButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/fab"
+		android:backgroundTint="@color/colorPrimaryDark"
+		android:layout_alignParentBottom="true"
+		android:layout_alignParentRight="true"
+		android:elevation="5dp"
+		app:rippleColor="@color/colorPrimaryText"
+		app:pressedTranslationZ="12dp"
+		android:layout_margin="16dp"
+		android:src="@drawable/ic_plus"/>
 </RelativeLayout>
