@@ -21,6 +21,10 @@ public class Topic {
 		return videoList;
 	}
 
+	public void addVideo(Video video) {
+		videoList.addVideo(video);
+	}
+
 	public void setVideoList(VideoList videoList) {
 		this.videoList = videoList;
 	}

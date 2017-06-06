@@ -9,33 +9,9 @@ import java.util.List;
 import io.reactivex.Observable;
 import io.reactivex.subjects.PublishSubject;
 
-/**
- * Created by crater on 06/06/17.
- */
-
 public class TopicList implements Parcelable {
 	PublishSubject<TopicList> notifier = PublishSubject.create();
 	private List<Topic> topics;
-
-	protected TopicList(Parcel in) {
-		in.readList(topics, null);
-	}
-
-	public static final Creator<TopicList> CREATOR = new Creator<TopicList>() {
-		@Override
-		public TopicList createFromParcel(Parcel in) {
-			return new TopicList(in);
-		}
-
-		@Override
-		public TopicList[] newArray(int size) {
-			return new TopicList[size];
-		}
-	};
-
-	public Observable<TopicList> asObservable() {
-		return notifier;
-	}
 
 	public TopicList() {
 		topics = new ArrayList<>();
@@ -44,6 +20,16 @@ public class TopicList implements Parcelable {
 	public TopicList(List<Topic> topics) {
 		this.topics = topics;
 	}
+
+	private TopicList(Parcel in) {
+		in.readList(topics, null);
+	}
+
+
+	public Observable<TopicList> asObservable() {
+		return notifier;
+	}
+
 
 	public Topic get(int index) {
 		return topics.get(index);
@@ -58,10 +44,28 @@ public class TopicList implements Parcelable {
 		notifier.onNext(this);
 	}
 
-	public void addVideoToTopic(int topicId, Video video) {
-		topics.get(topicId).getVideoList().addVideo(video);
-		notifier.onNext(this);
+	public boolean addVideoToTopic(int topicId, Video video) {
+		Topic topic = topics.get(topicId);
+		if (!topic.getVideoList().getVideos().contains(video)) {
+			topic.addVideo(video);
+			notifier.onNext(this);
+			return true;
+		} else {
+			return false;
+		}
 	}
+
+	public static final Creator<TopicList> CREATOR = new Creator<TopicList>() {
+		@Override
+		public TopicList createFromParcel(Parcel in) {
+			return new TopicList(in);
+		}
+
+		@Override
+		public TopicList[] newArray(int size) {
+			return new TopicList[size];
+		}
+	};
 
 	@Override
 	public int describeContents() {

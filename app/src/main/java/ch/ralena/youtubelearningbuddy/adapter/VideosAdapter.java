@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 import com.squareup.picasso.Picasso;
@@ -121,7 +122,12 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 				}
 				popup.setOnMenuItemClickListener(clickedItem -> {
 					if (clickedItem.getGroupId() == ITEM_TOPIC) {
-						topicList.addVideoToTopic(clickedItem.getItemId(), video);
+						boolean added = topicList.addVideoToTopic(clickedItem.getItemId(), video);
+						if(added) {
+							Toast.makeText(view.getContext(), "Video added to topic", Toast.LENGTH_SHORT).show();
+						} else {
+							Toast.makeText(view.getContext(), "You've already added this video", Toast.LENGTH_SHORT).show();
+						}
 					}
 					return true;
 				});
