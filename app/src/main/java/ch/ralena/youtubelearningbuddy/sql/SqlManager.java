@@ -13,10 +13,6 @@ import ch.ralena.youtubelearningbuddy.object.Topic;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.Video;
 
-/**
- * Created by crater on 06/06/17.
- */
-
 public class SqlManager {
 	private static final String TAG = SqlManager.class.getSimpleName();
 

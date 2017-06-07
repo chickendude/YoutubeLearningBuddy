@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.SubMenu;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,14 +24,19 @@ import ch.ralena.youtubelearningbuddy.model.CommentList;
 import ch.ralena.youtubelearningbuddy.model.comment.CommentThreads;
 import ch.ralena.youtubelearningbuddy.model.singleVideo.Item;
 import ch.ralena.youtubelearningbuddy.model.singleVideo.VideoResult;
+import ch.ralena.youtubelearningbuddy.object.Topic;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.Video;
+import ch.ralena.youtubelearningbuddy.sql.SqlManager;
 import retrofit2.Call;
 import retrofit2.Response;
 
 public class VideoDetailActivity extends AppCompatActivity {
 	private static final int MAX_LINES = 2;
 	private static final String TAG = VideoDetailActivity.class.getSimpleName();
+	private static final int MENU_TOPIC = 0;
+	private static final int TOPIC_SUBMENU = 1;
+	private static final int ITEM_TOPIC = 2;
 
 	private String videoId;
 	private CommentList comments;
@@ -81,6 +89,35 @@ public class VideoDetailActivity extends AppCompatActivity {
 		RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		recyclerView.setAdapter(adapter);
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		SubMenu topicsMenu = menu.addSubMenu(TOPIC_SUBMENU, MENU_TOPIC, Menu.NONE, "Add to topic");
+		int itemId = 0;
+		for (Topic topic : topicList.all()) {
+			topicsMenu.add(ITEM_TOPIC, itemId++, Menu.NONE, topic.getName());
+		}
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getGroupId() == ITEM_TOPIC) {
+			SqlManager sqlManager = new SqlManager(this);
+			Topic topic = topicList.get(item.getItemId());
+			boolean added = topicList.addVideoToTopic(topic, video);
+			if (added) {
+				sqlManager.addVideoToTopic(video, topic, topic.getVideoList().size());
+				Toast.makeText(this, "Video added to topic", Toast.LENGTH_SHORT).show();
+				return true;
+			} else {
+				Toast.makeText(this, "You've already added this video", Toast.LENGTH_SHORT).show();
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private void loadVideo() {

@@ -39,7 +39,6 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 	private VideoList videos;
 	private TopicList topicList;
 	private PublishSubject<VideoClickEvent> videoClickSubject = PublishSubject.create();
-	private SqlManager sqlManager;
 
 	public VideosAdapter(VideoList videos, TopicList topicList) {
 		this.videos = videos;

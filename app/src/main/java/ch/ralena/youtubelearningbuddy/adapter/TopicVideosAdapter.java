@@ -35,7 +35,7 @@ public class TopicVideosAdapter extends RecyclerView.Adapter<TopicVideosAdapter.
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
 		holder.bindView(videos.get(position));
-		holder.itemView.setOnClickListener(v -> YoutubeService.openVideo(v.getContext(), videos.get(position)));
+		holder.thumbnail.setOnClickListener(v -> YoutubeService.openVideo(v.getContext(), videos.get(position)));
 	}
 
 	@Override
