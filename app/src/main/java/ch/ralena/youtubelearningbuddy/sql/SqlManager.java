@@ -129,4 +129,19 @@ public class SqlManager {
 	}
 
 
+	public void deleteTopic(Topic topic) {
+		SQLiteDatabase database = sqlHelper.getWritableDatabase();
+		database.beginTransaction();
+
+		String whereClause = BaseColumns._ID + "=?";
+		String[] whereArgs = new String[]{String.valueOf(topic.getId())};
+		database.delete(SqlHelper.TABLE_TOPIC, whereClause, whereArgs);
+
+		whereClause = SqlHelper.COL_VIDEO_FOREIGN_KEY_TOPIC + "=?";
+		database.delete(SqlHelper.TABLE_VIDEO, whereClause, whereArgs);
+
+		database.setTransactionSuccessful();
+		database.endTransaction();
+		database.close();
+	}
 }

@@ -1,18 +1,23 @@
 package ch.ralena.youtubelearningbuddy.adapter;
 
 
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.jakewharton.rxbinding2.view.RxView;
 
 import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.object.Topic;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
+import ch.ralena.youtubelearningbuddy.sql.SqlManager;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.subjects.PublishSubject;
@@ -68,6 +73,19 @@ public class TopicsAdapter extends RecyclerView.Adapter<TopicsAdapter.ViewHolder
 		}
 
 		public void bindView(Topic topic) {
+			container.setOnLongClickListener(view -> {
+				PopupMenu popup = new PopupMenu(view.getContext(), view);
+				Menu menu = popup.getMenu();
+				menu.add("Delete Topic");
+				popup.setOnMenuItemClickListener(clickedItem -> {
+					SqlManager sqlManager = new SqlManager(container.getContext());
+					sqlManager.deleteTopic(topic);
+					topicList.remove(topic);
+					return true;
+				});
+				popup.show();
+				return true;
+			});
 			topicName.setText(topic.getName());
 			numVideos.setText("" + topic.getVideoList().size());
 			RxView.clicks(container)

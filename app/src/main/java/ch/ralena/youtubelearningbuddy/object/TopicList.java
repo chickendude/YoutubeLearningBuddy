@@ -35,6 +35,11 @@ public class TopicList implements Parcelable {
 		return topics.get(index);
 	}
 
+	public void remove(Topic topic) {
+		topics.remove(topic);
+		notifier.onNext(this);
+	}
+
 	public List<Topic> all() {
 		return topics;
 	}
