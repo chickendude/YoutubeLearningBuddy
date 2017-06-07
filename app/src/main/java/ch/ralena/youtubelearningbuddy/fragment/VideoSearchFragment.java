@@ -1,28 +1,28 @@
 package ch.ralena.youtubelearningbuddy.fragment;
 
-import android.content.Intent;
+import android.app.SearchManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import ch.ralena.youtubelearningbuddy.R;
-import ch.ralena.youtubelearningbuddy.VideoDetailActivity;
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.VideoClickEvent;
 import ch.ralena.youtubelearningbuddy.object.VideoList;
-import ch.ralena.youtubelearningbuddy.sql.SqlManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -44,14 +44,12 @@ public class VideoSearchFragment extends Fragment {
 	// member variables
 	private VideoList videos;
 	private TopicList topicList;
-	SqlManager sqlManager;
 
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_videosearch, container, false);
 
-		sqlManager = new SqlManager(getActivity());
 		videos = new VideoList();
 		topicList = getArguments().getParcelable(TOPIC_LIST);
 		searchText = (TextView) view.findViewById(R.id.searchText);
@@ -71,9 +69,20 @@ public class VideoSearchFragment extends Fragment {
 	}
 
 	@Override
-	public void onResume() {
-		super.onResume();
-		topicList = sqlManager.getTopicList();
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		super.onCreateOptionsMenu(menu,inflater);
+		inflater.inflate(R.menu.options, menu);
+
+		// connect searchable config with SearchView
+		SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+		SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+		searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
 	}
 
 	public static VideoSearchFragment newInstance(TopicList topicList) {
@@ -90,16 +99,6 @@ public class VideoSearchFragment extends Fragment {
 				.replace(R.id.fragmentContainer, VideoDetailFragment.newInstance(topicList, videoClickEvent))
 				.addToBackStack(null)
 				.commit();
-	}
-
-	private void loadDetailActivity(VideoClickEvent videoClickEvent) {
-		ImageView imageView = videoClickEvent.getImageView();
-		Intent intent = new Intent(getActivity(), VideoDetailActivity.class);
-		intent.putExtra(VIDEO_ID, videoClickEvent.getVideoId());
-		intent.putExtra(TRANSITION_NAME, imageView.getTransitionName());
-		intent.putExtra(TOPIC_LIST, topicList);
-		ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), imageView, imageView.getTransitionName());
-		startActivity(intent, options.toBundle());
 	}
 
 	public void newSearch(String query) {

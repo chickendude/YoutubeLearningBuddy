@@ -22,7 +22,6 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import ch.ralena.youtubelearningbuddy.R;
-import ch.ralena.youtubelearningbuddy.VideoDetailActivity;
 import ch.ralena.youtubelearningbuddy.adapter.CommentsAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.model.CommentList;
@@ -47,7 +46,7 @@ import static ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment.VIDEO_
 
 public class VideoDetailFragment extends Fragment {
 	private static final int MAX_LINES = 2;
-	private static final String TAG = VideoDetailActivity.class.getSimpleName();
+	private static final String TAG = VideoDetailFragment.class.getSimpleName();
 	private static final int MENU_TOPIC = 0;
 	private static final int TOPIC_SUBMENU = 1;
 	private static final int ITEM_TOPIC = 2;
@@ -65,7 +64,7 @@ public class VideoDetailFragment extends Fragment {
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.activity_videodetail, container, false);
+		View view = inflater.inflate(R.layout.fragment_videodetail, container, false);
 //		supportPostponeEnterTransition();
 
 		topicList = getArguments().getParcelable(TOPIC_LIST);
@@ -107,7 +106,14 @@ public class VideoDetailFragment extends Fragment {
 	}
 
 	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setHasOptionsMenu(true);
+	}
+
+	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		menu.clear();
 		SubMenu topicsMenu = menu.addSubMenu(TOPIC_SUBMENU, MENU_TOPIC, Menu.NONE, "Add to topic");
 		int itemId = 0;
 		for (Topic topic : topicList.all()) {
