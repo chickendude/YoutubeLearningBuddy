@@ -15,6 +15,7 @@ import android.view.Menu;
 import ch.ralena.youtubelearningbuddy.fragment.TopicsFragment;
 import ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
+import ch.ralena.youtubelearningbuddy.sql.SqlManager;
 
 import static ch.ralena.youtubelearningbuddy.R.menu.options;
 
@@ -24,13 +25,16 @@ public class MainActivity extends AppCompatActivity {
 	private ViewPager viewPager;
 	private VideoSearchFragment videoSearchFragment;
 	private TopicList topicList;
+	private SqlManager sqlManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		topicList = new TopicList();
+		sqlManager = new SqlManager(this);
+
+		topicList = sqlManager.getTopicList();
 
 		viewPager = (ViewPager) findViewById(R.id.viewPager);
 		viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {

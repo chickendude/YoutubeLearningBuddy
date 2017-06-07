@@ -12,11 +12,13 @@ import android.widget.EditText;
 import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.object.Topic;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
+import ch.ralena.youtubelearningbuddy.sql.SqlManager;
 import ch.ralena.youtubelearningbuddy.tools.Keyboard;
 
 public class NewTopicDialogFragment extends DialogFragment {
-	EditText newTopicEdit;
-	Button button;
+	private SqlManager sqlManager;
+	private EditText newTopicEdit;
+	private Button button;
 
 	TopicList topicList;
 
@@ -30,6 +32,7 @@ public class NewTopicDialogFragment extends DialogFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.dialog_newtopic, container, false);
+		sqlManager = new SqlManager(view.getContext());
 		button = (Button) view.findViewById(R.id.createButton);
 		newTopicEdit = (EditText) view.findViewById(R.id.newTopicEdit);
 		newTopicEdit.setOnEditorActionListener((v, actionId, event) -> {
@@ -43,7 +46,9 @@ public class NewTopicDialogFragment extends DialogFragment {
 			Keyboard.close(view);
 			String name = newTopicEdit.getText().toString();
 			// there's an observable listener on topicList to update recycler view
-			topicList.add(new Topic(name));
+			Topic topic = new Topic(name);
+			topicList.add(topic);
+			sqlManager.createTopic(topic);
 			dismiss();
 		});
 		return view;

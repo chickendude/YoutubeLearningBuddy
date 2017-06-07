@@ -3,6 +3,7 @@ package ch.ralena.youtubelearningbuddy.sql;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.provider.BaseColumns;
 
 /**
  * Created by crater on 06/06/17.
@@ -10,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class SqlHelper extends SQLiteOpenHelper {
 	public static final String DB_NAME = "youtubelearningbuddy.db";
-	private static final int DB_VERSION = 0;
+	private static final int DB_VERSION = 1;
 
 	// SQL structure for Topics
 	public static final String TABLE_TOPIC = "TOPIC";
@@ -18,19 +19,38 @@ public class SqlHelper extends SQLiteOpenHelper {
 
 	// SQL structure for Videos
 	public static final String TABLE_VIDEO = "VIDEO";
-	public static final String COL_VIDEO_INDEX = "INDEX";
+	public static final String COL_VIDEO_INDEX = "POSITION";
 	public static final String COL_VIDEO_PUBLISHEDAT = "PUBLISHEDAT";
 	public static final String COL_VIDEO_TITLE = "TITLE";
 	public static final String COL_VIDEO_DESCRIPTION = "DESCRIPTION";
 	public static final String COL_VIDEO_THUMBNAILURL = "THUMBNAILURL";
+	public static final String COL_VIDEO_FOREIGN_KEY_TOPIC = "TOPIC_ID";
 
-	public SqlHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-		super(context, DB_NAME, factory, DB_VERSION);
+	// SQL statements
+	private static final String CREATE_TOPIC =
+			"CREATE TABLE " + TABLE_TOPIC +
+					"( " + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+					COL_TOPIC_NAME + " TEXT )";
+	private static final String CREATE_VIDEO =
+			"CREATE TABLE " + TABLE_VIDEO +
+					"( " + BaseColumns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+					COL_VIDEO_INDEX + " INTEGER, " +
+					COL_VIDEO_PUBLISHEDAT + " TEXT, " +
+					COL_VIDEO_TITLE + " TEXT, " +
+					COL_VIDEO_DESCRIPTION + " TEXT, " +
+					COL_VIDEO_THUMBNAILURL + " TEXT, " +
+					COL_VIDEO_FOREIGN_KEY_TOPIC + " INTEGER, " +
+					"FOREIGN KEY(" + COL_VIDEO_FOREIGN_KEY_TOPIC + ") REFERENCES " + TABLE_TOPIC + "(_ID)" +
+					" )";
+
+	public SqlHelper(Context context) {
+		super(context, DB_NAME, null, DB_VERSION);
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-
+		db.execSQL(CREATE_TOPIC);
+		db.execSQL(CREATE_VIDEO);
 	}
 
 	@Override

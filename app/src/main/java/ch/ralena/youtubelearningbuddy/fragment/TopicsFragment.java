@@ -46,7 +46,7 @@ public class TopicsFragment extends Fragment {
 		});
 
 		// set up recycler view
-		TopicsAdapter adapter = new TopicsAdapter();
+		TopicsAdapter adapter = new TopicsAdapter(topicList);
 		adapter.asObservable().subscribe(this::loadTopicDetailActivity);
 		RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
 		recyclerView.setAdapter(adapter);
