@@ -10,7 +10,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
+
+import com.facebook.stetho.Stetho;
 
 import ch.ralena.youtubelearningbuddy.fragment.TopicsFragment;
 import ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment;
@@ -30,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// initialize Stetho
+		Stetho.initializeWithDefaults(this);
+
 		setContentView(R.layout.activity_main);
 
 		sqlManager = new SqlManager(this);
@@ -66,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
 		});
 		TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
 		tabLayout.setupWithViewPager(viewPager);
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		Log.d(TAG, "onResume");
 	}
 
 	@Override

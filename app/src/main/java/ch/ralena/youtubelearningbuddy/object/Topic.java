@@ -17,6 +17,7 @@ public class Topic implements Parcelable {
 	}
 
 	protected Topic(Parcel in) {
+		id = in.readLong();
 		name = in.readString();
 		in.readList(videoList, Topic.class.getClassLoader());
 	}
@@ -68,6 +69,7 @@ public class Topic implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeLong(id);
 		dest.writeString(name);
 		dest.writeList(videoList);
 	}

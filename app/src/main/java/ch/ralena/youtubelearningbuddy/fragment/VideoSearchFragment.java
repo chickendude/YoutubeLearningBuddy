@@ -22,6 +22,7 @@ import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.VideoClickEvent;
 import ch.ralena.youtubelearningbuddy.object.VideoList;
+import ch.ralena.youtubelearningbuddy.sql.SqlManager;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,12 +44,14 @@ public class VideoSearchFragment extends Fragment {
 	// member variables
 	private VideoList videos;
 	private TopicList topicList;
+	SqlManager sqlManager;
 
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_videosearch, container, false);
 
+		sqlManager = new SqlManager(getActivity());
 		videos = new VideoList();
 		topicList = getArguments().getParcelable(TOPIC_LIST);
 		searchText = (TextView) view.findViewById(R.id.searchText);
@@ -57,7 +60,7 @@ public class VideoSearchFragment extends Fragment {
 
 		// subscribe our adapter to video list
 		videos.asObservable().subscribe(videosAdapter);
-		videosAdapter.asObservable().subscribe(videoClickEvent -> loadDetailActivity(videoClickEvent));
+		videosAdapter.asObservable().subscribe(videoClickEvent -> loadDetailFragment(videoClickEvent));
 
 		// set up recycler view
 		recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
@@ -67,6 +70,12 @@ public class VideoSearchFragment extends Fragment {
 		return view;
 	}
 
+	@Override
+	public void onResume() {
+		super.onResume();
+		topicList = sqlManager.getTopicList();
+	}
+
 	public static VideoSearchFragment newInstance(TopicList topicList) {
 		VideoSearchFragment fragment = new VideoSearchFragment();
 		// add bundle/arguments to fragment
@@ -74,6 +83,13 @@ public class VideoSearchFragment extends Fragment {
 		bundle.putParcelable(TOPIC_LIST, topicList);
 		fragment.setArguments(bundle);
 		return fragment;
+	}
+
+	private void loadDetailFragment(VideoClickEvent videoClickEvent) {
+		getFragmentManager().beginTransaction()
+				.replace(R.id.fragmentContainer, VideoDetailFragment.newInstance(topicList, videoClickEvent))
+				.addToBackStack(null)
+				.commit();
 	}
 
 	private void loadDetailActivity(VideoClickEvent videoClickEvent) {
