@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import ch.ralena.youtubelearningbuddy.R;
+import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.object.Video;
 
 /**
@@ -34,6 +35,7 @@ public class TopicVideosAdapter extends RecyclerView.Adapter<TopicVideosAdapter.
 	@Override
 	public void onBindViewHolder(ViewHolder holder, int position) {
 		holder.bindView(videos.get(position));
+		holder.itemView.setOnClickListener(v -> YoutubeService.openVideo(v.getContext(), videos.get(position)));
 	}
 
 	@Override

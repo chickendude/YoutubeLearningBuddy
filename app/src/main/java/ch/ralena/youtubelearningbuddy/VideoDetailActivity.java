@@ -50,6 +50,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 
 		// load views
 		videoThumbnail = (ImageView) findViewById(R.id.videoThumbnail);
+		videoThumbnail.setOnClickListener(v -> YoutubeService.openVideo(v.getContext(), video));
 		String transitionName = getIntent().getStringExtra(VideoSearchFragment.TRANSITION_NAME);
 		videoThumbnail.setTransitionName(transitionName);
 		titleText = (TextView) findViewById(R.id.title);
