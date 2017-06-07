@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Topic implements Parcelable {
+	private long id;
 	private String name;
 	private List<Video> videoList;
 
@@ -50,6 +51,14 @@ public class Topic implements Parcelable {
 
 	public void setVideoList(List<Video> videoList) {
 		this.videoList = videoList;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	@Override

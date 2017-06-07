@@ -47,8 +47,8 @@ public class NewTopicDialogFragment extends DialogFragment {
 			String name = newTopicEdit.getText().toString();
 			// there's an observable listener on topicList to update recycler view
 			Topic topic = new Topic(name);
+			topic.setId(sqlManager.createTopic(topic));
 			topicList.add(topic);
-			sqlManager.createTopic(topic);
 			dismiss();
 		});
 		return view;

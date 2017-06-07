@@ -44,8 +44,7 @@ public class TopicList implements Parcelable {
 		notifier.onNext(this);
 	}
 
-	public boolean addVideoToTopic(int topicId, Video video) {
-		Topic topic = topics.get(topicId);
+	public boolean addVideoToTopic(Topic topic, Video video) {
 		if (!topic.getVideoList().contains(video)) {
 			topic.addVideo(video);
 			notifier.onNext(this);

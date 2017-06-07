@@ -21,6 +21,7 @@ import ch.ralena.youtubelearningbuddy.object.Topic;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.Video;
 import ch.ralena.youtubelearningbuddy.object.VideoList;
+import ch.ralena.youtubelearningbuddy.sql.SqlManager;
 import io.reactivex.Observable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
@@ -38,6 +39,7 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 	private VideoList videos;
 	private TopicList topicList;
 	private PublishSubject<VideoClickEvent> videoClickSubject = PublishSubject.create();
+	private SqlManager sqlManager;
 
 	public VideosAdapter(VideoList videos, TopicList topicList) {
 		this.videos = videos;
@@ -122,8 +124,13 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 				}
 				popup.setOnMenuItemClickListener(clickedItem -> {
 					if (clickedItem.getGroupId() == ITEM_TOPIC) {
-						boolean added = topicList.addVideoToTopic(clickedItem.getItemId(), video);
+						SqlManager sqlManager = new SqlManager(container.getContext());
+
+						Topic topic = topicList.get(clickedItem.getItemId());
+						boolean added = topicList.addVideoToTopic(topic, video);
+
 						if(added) {
+							sqlManager.addVideoToTopic(video, topic, topic.getVideoList().size());
 							Toast.makeText(view.getContext(), "Video added to topic", Toast.LENGTH_SHORT).show();
 						} else {
 							Toast.makeText(view.getContext(), "You've already added this video", Toast.LENGTH_SHORT).show();
