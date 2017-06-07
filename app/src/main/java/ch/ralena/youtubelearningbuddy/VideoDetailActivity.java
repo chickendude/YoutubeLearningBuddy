@@ -54,7 +54,7 @@ public class VideoDetailActivity extends AppCompatActivity {
 		String transitionName = getIntent().getStringExtra(VideoSearchFragment.TRANSITION_NAME);
 		videoThumbnail.setTransitionName(transitionName);
 		titleText = (TextView) findViewById(R.id.title);
-		descriptionText = (TextView) findViewById(R.id.description);
+		descriptionText = (TextView) findViewById(R.id.descriptionText);
 		ellipsisText = (TextView) findViewById(R.id.ellipsisText);
 		descriptionText.setOnClickListener(view -> {
 			ObjectAnimator animation;

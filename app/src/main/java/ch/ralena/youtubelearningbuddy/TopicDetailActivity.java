@@ -24,7 +24,7 @@ public class TopicDetailActivity extends AppCompatActivity {
 		Log.d(TAG, topic.getName());
 		setTitle(topic.getName());
 
-		TopicVideosAdapter adapter = new TopicVideosAdapter();
+		TopicVideosAdapter adapter = new TopicVideosAdapter(topic.getVideoList());
 		RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 		recyclerView.setAdapter(adapter);
 		recyclerView.setLayoutManager(new LinearLayoutManager(getApplication()));

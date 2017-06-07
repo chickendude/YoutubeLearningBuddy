@@ -61,15 +61,16 @@ public class SqlManager {
 
 		Cursor videoCursor = database.rawQuery(
 				"SELECT * FROM " + SqlHelper.TABLE_VIDEO +
-						" WHERE " + SqlHelper.COL_VIDEO_FOREIGN_KEY_TOPIC + " = " + id, null);
+						" WHERE " + SqlHelper.COL_VIDEO_FOREIGN_KEY_TOPIC + " = " + id +
+						" ORDER BY " + SqlHelper.COL_VIDEO_POSITION + " ASC", null);
 		if (videoCursor.moveToFirst()) {
 			do {
-				String publishedAt = getString(videoCursor, SqlHelper.COL_VIDEO_DESCRIPTION);
+				String publishedAt = getString(videoCursor, SqlHelper.COL_VIDEO_PUBLISHEDAT);
 				String description = getString(videoCursor, SqlHelper.COL_VIDEO_DESCRIPTION);
-				String title = getString(videoCursor, SqlHelper.COL_VIDEO_DESCRIPTION);
-				String thumbnailUrl = getString(videoCursor, SqlHelper.COL_VIDEO_DESCRIPTION);
+				String title = getString(videoCursor, SqlHelper.COL_VIDEO_TITLE);
+				String thumbnailUrl = getString(videoCursor, SqlHelper.COL_VIDEO_THUMBNAILURL);
 				String videoId = getString(videoCursor, SqlHelper.COL_VIDEO_VIDEO_ID);
-				int position = getInt(videoCursor, SqlHelper.COL_VIDEO_DESCRIPTION);
+				int position = getInt(videoCursor, SqlHelper.COL_VIDEO_POSITION);
 
 				Video video = new Video(publishedAt, title, description, thumbnailUrl, videoId, position);
 				videoList.add(video);
