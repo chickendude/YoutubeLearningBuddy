@@ -9,7 +9,7 @@ import java.util.List;
 public class Topic implements Parcelable {
 	private long id;
 	private String name;
-	private List<Video> videoList;
+	private List<Video> videoList = new ArrayList<>();
 
 	public Topic(String name) {
 		this.name = name;
@@ -18,7 +18,7 @@ public class Topic implements Parcelable {
 
 	protected Topic(Parcel in) {
 		name = in.readString();
-		in.readList(videoList, null);
+		in.readList(videoList, Topic.class.getClassLoader());
 	}
 
 	public static final Creator<Topic> CREATOR = new Creator<Topic>() {
