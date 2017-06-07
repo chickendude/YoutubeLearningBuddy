@@ -30,6 +30,11 @@ public class VideoList {
 		notifier.onNext(this);
 	}
 
+	public void addVideosFromItems(List<Item> items) {
+		items.forEach(item -> videos.add(Video.loadFromItem(item)));
+		notifier.onNext(this);
+	}
+
 	public void addVideos(List<Video> videos) {
 		this.videos.addAll(videos);
 		notifier.onNext(this);

@@ -27,10 +27,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-/**
- * Created by crater on 05/06/17.
- */
-
 public class VideoSearchFragment extends Fragment {
 	private static final String TAG = VideoSearchFragment.class.getSimpleName();
 	public static final String TRANSITION_NAME = "tag_transition_name";
@@ -41,14 +37,20 @@ public class VideoSearchFragment extends Fragment {
 	private RecyclerView recyclerView;
 	private VideosAdapter videosAdapter;
 	private TextView searchText;
+	GridLayoutManager gridLayoutManager;
 	// member variables
 	private VideoList videos;
 	private TopicList topicList;
+	private boolean loadingVideos;
+	private String query;
+	private String nextPageToken;
 
 	@Nullable
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_videosearch, container, false);
+
+		loadingVideos = true;
 
 		videos = new VideoList();
 		topicList = getArguments().getParcelable(TOPIC_LIST);
@@ -58,12 +60,14 @@ public class VideoSearchFragment extends Fragment {
 
 		// subscribe our adapter to video list
 		videos.asObservable().subscribe(videosAdapter);
-		videosAdapter.asObservable().subscribe(videoClickEvent -> loadDetailFragment(videoClickEvent));
+		videosAdapter.asObservable().subscribe(this::loadDetailFragment);
 
 		// set up recycler view
 		recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-		recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+		gridLayoutManager = new GridLayoutManager(getContext(), 2);
+		recyclerView.setLayoutManager(gridLayoutManager);
 		recyclerView.setAdapter(videosAdapter);
+		recyclerView.addOnScrollListener(onScrollListener);
 
 		return view;
 	}
@@ -85,6 +89,41 @@ public class VideoSearchFragment extends Fragment {
 		searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
 	}
 
+	private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+		@Override
+		public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+			super.onScrolled(recyclerView, dx, dy);
+			int totalItems = gridLayoutManager.getItemCount();
+			int visibleItems = gridLayoutManager.getChildCount();
+			int firstItem = gridLayoutManager.findFirstVisibleItemPosition();
+
+			if (!loadingVideos &&
+					visibleItems + firstItem > totalItems - 5) {
+				loadingVideos = true;
+				YoutubeService.getYoutubeService()
+						.videosNextPage(query, nextPageToken)
+						.enqueue(new Callback<SearchResults>() {
+							@Override
+							public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
+								loadingVideos = false;
+								if (response.isSuccessful()) {
+									nextPageToken = response.body().getNextPageToken();
+									videos.addVideosFromItems(response.body().getItems());
+								} else {
+									Toast.makeText(getActivity(), "Error getting results", Toast.LENGTH_SHORT).show();
+								}
+							}
+
+							@Override
+							public void onFailure(Call<SearchResults> call, Throwable t) {
+								loadingVideos = false;
+								Toast.makeText(getActivity(), "Failure: Error getting results", Toast.LENGTH_SHORT).show();
+							}
+						});
+			}
+		}
+	};
+
 	public static VideoSearchFragment newInstance(TopicList topicList) {
 		VideoSearchFragment fragment = new VideoSearchFragment();
 		// add bundle/arguments to fragment
@@ -102,21 +141,21 @@ public class VideoSearchFragment extends Fragment {
 	}
 
 	public void newSearch(String query) {
-		String order = "rating";
-		String type = "video";
-		int maxResults = 20;
-
+		this.query = query;
 		searchText.setText("Search results for \"" + query + "\":");
-		searchVideos(order, type, query, maxResults);
+		searchVideos(query);
 	}
 
-	private void searchVideos(String order, String type, String query, int maxResults) {
+	private void searchVideos(String query) {
+		loadingVideos = true;
 		YoutubeService.getYoutubeService()
-				.videos(order, type, query, maxResults)
+				.videos(query)
 				.enqueue(new Callback<SearchResults>() {
 					@Override
 					public void onResponse(Call<SearchResults> call, Response<SearchResults> response) {
+						loadingVideos = false;
 						if (response.isSuccessful()) {
+							nextPageToken = response.body().getNextPageToken();
 							videos.setVideosFromItems(response.body().getItems());
 						} else {
 							Toast.makeText(getActivity(), "Error getting results", Toast.LENGTH_SHORT).show();
@@ -125,6 +164,7 @@ public class VideoSearchFragment extends Fragment {
 
 					@Override
 					public void onFailure(Call<SearchResults> call, Throwable t) {
+						loadingVideos = false;
 						Toast.makeText(getActivity(), "Error getting results", Toast.LENGTH_SHORT).show();
 					}
 				});

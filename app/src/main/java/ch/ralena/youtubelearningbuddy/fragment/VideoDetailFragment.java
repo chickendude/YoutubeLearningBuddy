@@ -40,10 +40,6 @@ import static ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment.TOPIC_
 import static ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment.TRANSITION_NAME;
 import static ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment.VIDEO_ID;
 
-/**
- * Created by crater on 07/06/17.
- */
-
 public class VideoDetailFragment extends Fragment {
 	private static final int MAX_LINES = 2;
 	private static final String TAG = VideoDetailFragment.class.getSimpleName();
