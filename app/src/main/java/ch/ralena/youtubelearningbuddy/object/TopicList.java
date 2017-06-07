@@ -11,7 +11,7 @@ import io.reactivex.subjects.PublishSubject;
 
 public class TopicList implements Parcelable {
 	PublishSubject<TopicList> notifier = PublishSubject.create();
-	private List<Topic> topics;
+	private List<Topic> topics = new ArrayList<>();
 
 	public TopicList() {
 		topics = new ArrayList<>();
@@ -22,7 +22,7 @@ public class TopicList implements Parcelable {
 	}
 
 	private TopicList(Parcel in) {
-		in.readList(topics, null);
+		in.readList(topics, TopicList.class.getClassLoader());
 	}
 
 

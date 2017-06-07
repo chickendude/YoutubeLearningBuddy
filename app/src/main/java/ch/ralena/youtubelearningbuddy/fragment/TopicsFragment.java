@@ -7,7 +7,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +66,6 @@ public class TopicsFragment extends Fragment {
 	private void loadTopicDetailActivity(Topic topic) {
 		Intent intent = new Intent(getActivity(), TopicDetailActivity.class);
 		intent.setExtrasClassLoader(Topic.class.getClassLoader());
-		Log.d(TAG, topic.getName());
 		intent.putExtra(TOPIC, topic);
 		startActivity(intent);
 	}

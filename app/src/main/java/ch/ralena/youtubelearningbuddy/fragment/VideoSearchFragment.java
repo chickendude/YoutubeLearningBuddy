@@ -7,7 +7,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,8 +19,8 @@ import ch.ralena.youtubelearningbuddy.VideoDetailActivity;
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
 import ch.ralena.youtubelearningbuddy.api.YoutubeService;
 import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
-import ch.ralena.youtubelearningbuddy.object.VideoClickEvent;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
+import ch.ralena.youtubelearningbuddy.object.VideoClickEvent;
 import ch.ralena.youtubelearningbuddy.object.VideoList;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -80,7 +79,6 @@ public class VideoSearchFragment extends Fragment {
 	private void loadDetailActivity(VideoClickEvent videoClickEvent) {
 		ImageView imageView = videoClickEvent.getImageView();
 		Intent intent = new Intent(getActivity(), VideoDetailActivity.class);
-		Log.d(TAG, videoClickEvent.getVideoId());
 		intent.putExtra(VIDEO_ID, videoClickEvent.getVideoId());
 		intent.putExtra(TRANSITION_NAME, imageView.getTransitionName());
 		intent.putExtra(TOPIC_LIST, topicList);

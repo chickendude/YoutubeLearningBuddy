@@ -1,7 +1,6 @@
 package ch.ralena.youtubelearningbuddy.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,7 +56,6 @@ public class TopicVideosAdapter extends RecyclerView.Adapter<TopicVideosAdapter.
 		public void bindView(Video video) {
 			title.setText(video.getTitle());
 			description.setText(video.getDescription());
-			Log.d("asdf", video.getThumbnailUrl());
 			Picasso.with(thumbnail.getContext())
 					.load(video.getThumbnailUrl())
 					.fit()
