@@ -38,9 +38,8 @@
 		android:layout_height="wrap_content"
 		android:background="@drawable/background_ellipsis"
 		android:rotation="180"
-		android:text="..."
-		android:textAlignment="center"
-		android:visibility="gone"/>
+		android:text="@string/ellipsis"
+		android:textAlignment="center"/>
 
 	<android.support.v7.widget.RecyclerView
 		android:id="@+id/recyclerView"

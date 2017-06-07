@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,13 +54,13 @@ public class VideoDetailActivity extends AppCompatActivity {
 		videoThumbnail.setTransitionName(transitionName);
 		titleText = (TextView) findViewById(R.id.title);
 		descriptionText = (TextView) findViewById(R.id.descriptionText);
+		descriptionText.setMaxLines(MAX_LINES);
 		ellipsisText = (TextView) findViewById(R.id.ellipsisText);
 		descriptionText.setOnClickListener(view -> {
 			ObjectAnimator animation;
 			int numLines =
 					descriptionText.getLineCount() == descriptionText.getMaxLines() ?
 							MAX_LINES : descriptionText.getLineCount();
-			checkDescriptionOverflow();
 			animation = ObjectAnimator.ofInt(descriptionText, "maxLines", numLines);
 			animation.setDuration(200).start();
 		});
@@ -81,20 +80,6 @@ public class VideoDetailActivity extends AppCompatActivity {
 		RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		recyclerView.setAdapter(adapter);
-	}
-
-
-	private void checkDescriptionOverflow() {
-		// if it has more than 4 lines, check whether it's expanded or not
-		// and update ellipsis text accordingly
-		if(descriptionText.getLineCount() > MAX_LINES) {
-			ellipsisText.setVisibility(View.VISIBLE);
-			if (descriptionText.getLineCount() > descriptionText.getMaxLines()) {
-				ellipsisText.setText("");
-			} else {
-				ellipsisText.setText("...");
-			}
-		}
 	}
 
 	private void loadVideo() {
@@ -122,10 +107,10 @@ public class VideoDetailActivity extends AppCompatActivity {
 					titleText.setSelected(true);
 					descriptionText.setText(video.getDescription());
 					// check if description is too long
-					if(descriptionText.getLineCount() > MAX_LINES)
-						descriptionText.setMaxLines(MAX_LINES);
-						ellipsisText.setVisibility(View.VISIBLE);
-					});
+					if (descriptionText.getLineCount() <= MAX_LINES) {
+						ellipsisText.setText("");
+					}
+				});
 
 		Log.d(TAG, videoId);
 		YoutubeService.getYoutubeService()
@@ -133,14 +118,14 @@ public class VideoDetailActivity extends AppCompatActivity {
 				.enqueue(new retrofit2.Callback<VideoResult>() {
 					@Override
 					public void onResponse(Call<VideoResult> call, Response<VideoResult> response) {
-						Log.d(TAG,"on response");
+						Log.d(TAG, "on response");
 						Item item = response.body().getItems().get(0);
 						video.loadFromSnippet(item.getSnippet(), item.getId());
 					}
 
 					@Override
 					public void onFailure(Call<VideoResult> call, Throwable t) {
-						Log.d(TAG,"on failure");
+						Log.d(TAG, "on failure");
 					}
 				});
 	}
