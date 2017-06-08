@@ -1,19 +1,15 @@
 package ch.ralena.youtubelearningbuddy.object;
 
-import android.widget.ImageView;
-
-/**
- * Created by crater on 04/06/17.
- */
+import android.widget.TextView;
 
 public class VideoClickEvent {
 	private Video video;
-	private ImageView imageView;
+	private TextView titleView;
 	private String videoId;
 
-	public VideoClickEvent(Video video, ImageView imageView, String videoId) {
+	public VideoClickEvent(Video video, TextView titleView, String videoId) {
 		this.video = video;
-		this.imageView = imageView;
+		this.titleView = titleView;
 		this.videoId = videoId;
 	}
 
@@ -21,11 +17,11 @@ public class VideoClickEvent {
 		return video;
 	}
 
-	public ImageView getImageView() {
-		return imageView;
-	}
-
 	public String getVideoId() {
 		return videoId;
+	}
+
+	public TextView getTitleView() {
+		return titleView;
 	}
 }

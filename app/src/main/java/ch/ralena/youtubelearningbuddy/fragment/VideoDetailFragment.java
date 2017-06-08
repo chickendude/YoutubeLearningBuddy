@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -33,12 +33,14 @@ import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.Video;
 import ch.ralena.youtubelearningbuddy.object.VideoClickEvent;
 import ch.ralena.youtubelearningbuddy.sql.SqlManager;
+import ch.ralena.youtubelearningbuddy.tools.Toaster;
 import retrofit2.Call;
 import retrofit2.Response;
 
 import static ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment.TOPIC_LIST;
 import static ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment.TRANSITION_NAME;
 import static ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment.VIDEO_ID;
+import static ch.ralena.youtubelearningbuddy.fragment.VideoSearchFragment.VIDEO_TITLE;
 
 public class VideoDetailFragment extends Fragment {
 	private static final int MAX_LINES = 2;
@@ -61,16 +63,20 @@ public class VideoDetailFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.fragment_videodetail, container, false);
-//		supportPostponeEnterTransition();
 
 		topicList = getArguments().getParcelable(TOPIC_LIST);
 
 		// load views
 		videoThumbnail = (ImageView) view.findViewById(R.id.videoThumbnail);
 		videoThumbnail.setOnClickListener(v -> YoutubeService.openVideo(v.getContext(), video));
-		String transitionName = getArguments().getString(TRANSITION_NAME);
-		videoThumbnail.setTransitionName(transitionName);
+		// title + transition
 		titleText = (TextView) view.findViewById(R.id.title);
+		titleText.setTransitionName(getArguments().getString(TRANSITION_NAME));
+		titleText.setText(getArguments().getString(VIDEO_TITLE));
+		// must set in code or else marquee won't work
+		titleText.setSingleLine(true);
+		titleText.setSelected(true);
+		// description
 		descriptionText = (TextView) view.findViewById(R.id.descriptionText);
 		descriptionText.setMaxLines(MAX_LINES);
 		ellipsisText = (TextView) view.findViewById(R.id.ellipsisText);
@@ -86,6 +92,7 @@ public class VideoDetailFragment extends Fragment {
 		// set up detail page objects
 		comments = new CommentList();
 		video = new Video();
+		postponeEnterTransition();
 
 		// get video id and load everything from Youtube
 		videoId = getArguments().getString(VideoSearchFragment.VIDEO_ID);
@@ -96,7 +103,7 @@ public class VideoDetailFragment extends Fragment {
 		CommentsAdapter adapter = new CommentsAdapter();
 		comments.asObservable().subscribe(adapter);
 		RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-		recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+		recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 		recyclerView.setAdapter(adapter);
 		return view;
 	}
@@ -105,6 +112,7 @@ public class VideoDetailFragment extends Fragment {
 	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setHasOptionsMenu(true);
+		setSharedElementEnterTransition(TransitionInflater.from(getContext()).inflateTransition(android.R.transition.move));
 	}
 
 	@Override
@@ -120,15 +128,15 @@ public class VideoDetailFragment extends Fragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getGroupId() == ITEM_TOPIC) {
-			SqlManager sqlManager = new SqlManager(getContext());
+			SqlManager sqlManager = new SqlManager(getActivity());
 			Topic topic = topicList.get(item.getItemId());
 			boolean added = topicList.addVideoToTopic(topic, video);
 			if (added) {
 				sqlManager.addVideoToTopic(video, topic, topic.getVideoList().size());
-				Toast.makeText(getContext(), "Video added to topic", Toast.LENGTH_SHORT).show();
+				Toaster.makeToast(getActivity(), "Video added to \"" + topic.getName() + "\"");
 				return true;
 			} else {
-				Toast.makeText(getContext(), "You've already added this video", Toast.LENGTH_SHORT).show();
+				Toaster.makeToast(getActivity(), "You've already added this video");
 			}
 			return true;
 		} else {
@@ -147,18 +155,14 @@ public class VideoDetailFragment extends Fragment {
 							.into(videoThumbnail, new Callback() {
 								@Override
 								public void onSuccess() {
-//									supportStartPostponedEnterTransition();
+									startPostponedEnterTransition();
 								}
 
 								@Override
 								public void onError() {
-//									supportStartPostponedEnterTransition();
+									startPostponedEnterTransition();
 								}
 							});
-					titleText.setText(video.getTitle());
-					// must set in code or else marquee won't work
-					titleText.setSingleLine(true);
-					titleText.setSelected(true);
 					descriptionText.setText(video.getDescription());
 					// check if description is too long
 					if (descriptionText.getLineCount() <= MAX_LINES) {
@@ -195,16 +199,16 @@ public class VideoDetailFragment extends Fragment {
 							if (!response.body().getItems().isEmpty()) {
 								comments.setComments(response.body());
 							} else {
-								Toast.makeText(getActivity(), "No comments", Toast.LENGTH_SHORT).show();
+								Toaster.makeToast(getActivity(), "No comments");
 							}
 						} else {
-							Toast.makeText(getActivity(), "Error getting results", Toast.LENGTH_SHORT).show();
+								Toaster.makeToast(getActivity(), "Error getting results");
 						}
 					}
 
 					@Override
 					public void onFailure(Call<CommentThreads> call, Throwable t) {
-						Toast.makeText(getActivity(), "Failed: Error getting results", Toast.LENGTH_SHORT).show();
+						Toaster.makeToast(getActivity(), "Failed: Error getting results");
 					}
 				});
 	}
@@ -216,7 +220,8 @@ public class VideoDetailFragment extends Fragment {
 		Bundle bundle = new Bundle();
 		bundle.putParcelable(TOPIC_LIST, topicList);
 		bundle.putString(VIDEO_ID, videoClickEvent.getVideoId());
-		bundle.putString(TRANSITION_NAME, videoClickEvent.getImageView().getTransitionName());
+		bundle.putString(VIDEO_TITLE, videoClickEvent.getTitleView().getText().toString());
+		bundle.putString(TRANSITION_NAME, videoClickEvent.getTitleView().getTransitionName());
 		fragment.setArguments(bundle);
 		return fragment;
 	}

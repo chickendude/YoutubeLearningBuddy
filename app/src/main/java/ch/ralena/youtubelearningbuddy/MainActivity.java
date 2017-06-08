@@ -84,17 +84,4 @@ public class MainActivity extends AppCompatActivity {
 			videoSearchFragment.newSearch(query);
 		}
 	}
-
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		getMenuInflater().inflate(options, menu);
-//
-//		// connect searchable config with SearchView
-//		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//		SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-//		searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-//
-//		return true;
-//	}
-
 }

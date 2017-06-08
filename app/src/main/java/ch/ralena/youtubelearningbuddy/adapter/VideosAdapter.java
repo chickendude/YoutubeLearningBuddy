@@ -66,9 +66,9 @@ public class VideosAdapter extends RecyclerView.Adapter<VideosAdapter.ViewHolder
 			Video video = videos.getVideos().get(position);
 			VideoClickEvent videoClickEvent = new VideoClickEvent(
 					video,
-					holder.thumbnail,
+					holder.title,
 					video.getId());
-			holder.thumbnail.setTransitionName("item" + position);
+			holder.title.setTransitionName("item" + position);
 			RxView.clicks(holder.container)
 					.map(aVoid -> videoClickEvent)
 					.subscribe(videoClickSubject);

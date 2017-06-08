@@ -8,13 +8,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.transition.Fade;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import ch.ralena.youtubelearningbuddy.R;
 import ch.ralena.youtubelearningbuddy.adapter.VideosAdapter;
@@ -23,6 +23,7 @@ import ch.ralena.youtubelearningbuddy.model.video.SearchResults;
 import ch.ralena.youtubelearningbuddy.object.TopicList;
 import ch.ralena.youtubelearningbuddy.object.VideoClickEvent;
 import ch.ralena.youtubelearningbuddy.object.VideoList;
+import ch.ralena.youtubelearningbuddy.tools.Toaster;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,7 +32,9 @@ public class VideoSearchFragment extends Fragment {
 	private static final String TAG = VideoSearchFragment.class.getSimpleName();
 	public static final String TRANSITION_NAME = "tag_transition_name";
 	public static final String VIDEO_ID = "tag_video_id";
+	public static final String VIDEO_TITLE = "tag_video_title";
 	public static final String TOPIC_LIST = "tag_topic_list";
+
 
 	// views
 	private RecyclerView recyclerView;
@@ -64,7 +67,7 @@ public class VideoSearchFragment extends Fragment {
 
 		// set up recycler view
 		recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-		gridLayoutManager = new GridLayoutManager(getContext(), 2);
+		gridLayoutManager = new GridLayoutManager(getActivity(), 2);
 		recyclerView.setLayoutManager(gridLayoutManager);
 		recyclerView.setAdapter(videosAdapter);
 		recyclerView.addOnScrollListener(onScrollListener);
@@ -80,7 +83,7 @@ public class VideoSearchFragment extends Fragment {
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		super.onCreateOptionsMenu(menu,inflater);
+		super.onCreateOptionsMenu(menu, inflater);
 		inflater.inflate(R.menu.options, menu);
 
 		// connect searchable config with SearchView
@@ -110,14 +113,14 @@ public class VideoSearchFragment extends Fragment {
 									nextPageToken = response.body().getNextPageToken();
 									videos.addVideosFromItems(response.body().getItems());
 								} else {
-									Toast.makeText(getActivity(), "Error getting results", Toast.LENGTH_SHORT).show();
+									Toaster.makeToast(getActivity(), "Error getting results");
 								}
 							}
 
 							@Override
 							public void onFailure(Call<SearchResults> call, Throwable t) {
 								loadingVideos = false;
-								Toast.makeText(getActivity(), "Failure: Error getting results", Toast.LENGTH_SHORT).show();
+								Toaster.makeToast(getActivity(), "Failure: Error getting results");
 							}
 						});
 			}
@@ -134,9 +137,17 @@ public class VideoSearchFragment extends Fragment {
 	}
 
 	private void loadDetailFragment(VideoClickEvent videoClickEvent) {
-		getFragmentManager().beginTransaction()
-				.replace(R.id.fragmentContainer, VideoDetailFragment.newInstance(topicList, videoClickEvent))
+		VideoDetailFragment fragment = VideoDetailFragment.newInstance(topicList, videoClickEvent);
+
+		fragment.setEnterTransition(new Fade());
+		videoClickEvent.getTitleView().setTransitionName(videoClickEvent.getTitleView().getTransitionName());
+
+		getFragmentManager()
+				.beginTransaction()
+				.replace(R.id.fragmentContainer, fragment)
+				.addSharedElement(videoClickEvent.getTitleView(), videoClickEvent.getTitleView().getTransitionName())
 				.addToBackStack(null)
+				.setAllowOptimization(true)
 				.commit();
 	}
 
@@ -158,14 +169,14 @@ public class VideoSearchFragment extends Fragment {
 							nextPageToken = response.body().getNextPageToken();
 							videos.setVideosFromItems(response.body().getItems());
 						} else {
-							Toast.makeText(getActivity(), "Error getting results", Toast.LENGTH_SHORT).show();
+							Toaster.makeToast(getActivity(), "Error getting results");
 						}
 					}
 
 					@Override
 					public void onFailure(Call<SearchResults> call, Throwable t) {
 						loadingVideos = false;
-						Toast.makeText(getActivity(), "Error getting results", Toast.LENGTH_SHORT).show();
+						Toaster.makeToast(getActivity(), "Error getting results");
 					}
 				});
 	}
