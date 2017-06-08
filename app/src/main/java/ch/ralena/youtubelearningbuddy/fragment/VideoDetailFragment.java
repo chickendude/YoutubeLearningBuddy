@@ -92,7 +92,6 @@ public class VideoDetailFragment extends Fragment {
 		// set up detail page objects
 		comments = new CommentList();
 		video = new Video();
-		postponeEnterTransition();
 
 		// get video id and load everything from Youtube
 		videoId = getArguments().getString(VideoSearchFragment.VIDEO_ID);
@@ -155,12 +154,12 @@ public class VideoDetailFragment extends Fragment {
 							.into(videoThumbnail, new Callback() {
 								@Override
 								public void onSuccess() {
-									startPostponedEnterTransition();
+
 								}
 
 								@Override
 								public void onError() {
-									startPostponedEnterTransition();
+
 								}
 							});
 					descriptionText.setText(video.getDescription());

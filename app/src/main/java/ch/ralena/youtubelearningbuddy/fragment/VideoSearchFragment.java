@@ -138,16 +138,13 @@ public class VideoSearchFragment extends Fragment {
 
 	private void loadDetailFragment(VideoClickEvent videoClickEvent) {
 		VideoDetailFragment fragment = VideoDetailFragment.newInstance(topicList, videoClickEvent);
-
 		fragment.setEnterTransition(new Fade());
-		videoClickEvent.getTitleView().setTransitionName(videoClickEvent.getTitleView().getTransitionName());
 
 		getFragmentManager()
 				.beginTransaction()
 				.replace(R.id.fragmentContainer, fragment)
 				.addSharedElement(videoClickEvent.getTitleView(), videoClickEvent.getTitleView().getTransitionName())
 				.addToBackStack(null)
-				.setAllowOptimization(true)
 				.commit();
 	}
 
